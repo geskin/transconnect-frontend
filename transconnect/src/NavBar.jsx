@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./css/NavBar.css";
 import { NavLink } from "react-router-dom";
 import { Navbar, Nav, NavItem } from "reactstrap";
+import UserContext from "./UserContext";
 
-function NavBar({ currUser }) {
+function NavBar() {
+    const { currUser } = useContext(UserContext);
+
     return (
         <div>
             <Navbar expand="md">
@@ -19,7 +22,7 @@ function NavBar({ currUser }) {
                             <NavLink to="/posts">Posts</NavLink>
                         </NavItem>
                         <NavItem className="nav-item me-4">
-                            <NavLink to="/profile">Profile</NavLink>
+                            <NavLink to={`/users/${currUser.username}`}>Your profile</NavLink>
                         </NavItem>
                         <NavItem className="nav-item me-4">
                             <NavLink to="/logout">{`Logout ${currUser.username}`}</NavLink>

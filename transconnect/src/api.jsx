@@ -37,47 +37,86 @@ class TransconnectApi {
 
     // Individual API routes
 
+    //POSTS routes
+
     /** Get all posts
      * optionally filter by tag
      */
 
-    static async getPosts(tag = '') {
-        const queryParams = tag ? { tag: tag } : {};
-        let res = await this.request('posts', queryParams);
-        return res.posts;
+    static async getPosts(tag = '') { // tag = [] given an array of tags 
+        try {
+            const queryParams = tag ? { tag: tag } : {};
+            let res = await this.request('posts', queryParams);
+            return res.posts;
+        } catch (err) {
+            console.error("error fetching posts", err);
+        }
     }
 
     /** Make a post */
 
     static async createPost(post) {
-        let res = await this.request('posts', post, 'post');
-        return res.post;
+        try {
+            let res = await this.request('posts', post, 'post');
+            return res.post;
+        } catch (err) {
+            console.error("error creating post", err);
+        }
     }
 
     static async editPost(postId, post) {
-        let res = await this.request(`posts/${postId}`, post, 'patch');
-        return res.post;
+        try {
+            let res = await this.request(`posts/${postId}`, post, 'patch');
+            return res.post;
+        } catch (err) {
+            console.error("error editing post", err);
+        }
     }
+
+    // COMMENTS routes
 
     /** Get the comments on a post */
 
     static async getComments(postId) {
-        let res = await this.request(`posts/${postId}/comments`);
-        return res.comments;
+        try {
+            let res = await this.request(`posts/${postId}/comments`);
+            return res.comments;
+        } catch (err) {
+            console.error("error fetching comments", err);
+        }
     }
 
     /** Make a comment */
 
     static async createComment(postId, comment) {
-        let res = await this.request(`posts/${postId}/comments`, comment, 'post');
-        return res.comment;
+        try {
+            let res = await this.request(`posts/${postId}/comments`, comment, 'post');
+            return res.comment;
+        } catch (err) {
+            console.error("error creating comment", err);
+        }
     }
 
     /** Edit (patch) a comment */
 
     static async editComment(postId, commentId, comment) {
-        let res = await this.request(`posts/${postId}/comments/${commentId}`, comment, "patch");
-        return res.comment;
+        try {
+            let res = await this.request(`posts/${postId}/comments/${commentId}`, comment, "patch");
+            return res.comment;
+        } catch (err) {
+            console.error("error editing comment", err);
+        }
+    }
+
+    // TAGS
+
+    static async getTags() {
+        try {
+            let res = await this.request('posts/tags');
+            return res.tags;
+        } catch (err) {
+            console.error("error fetching tags", err);
+        }
     }
 
     //AUTH and USER
@@ -85,34 +124,49 @@ class TransconnectApi {
     /** Get user by username. */
 
     static async getUser(username) {
-        let res = await this.request(`users/${username}`);
-        return res.user;
+        try {
+            let res = await this.request(`users/${username}`);
+            return res.user;
+        } catch (err) {
+            console.error(`error fetching user ${username}`, err);
+        }
     }
 
     /** Register a user (signup) */
 
     static async register(user) {
-        let res = await this.request('auth/register', user, 'post');
-        return res.token;
+        try {
+            let res = await this.request('auth/register', user, 'post');
+            return res.token;
+        } catch (err) {
+            console.error("error creating user", err);
+        }
     }
 
     /** Authenticate a user (login) */
 
     static async authenticate(username, password) {
-        let res = await this.request('auth/token', { username, password }, 'post');
-        return res.token;
+        try {
+            let res = await this.request('auth/token', { username, password }, 'post');
+            return res.token;
+        } catch (err) {
+            console.error("error loging user in (error creating token)", err);
+        }
     }
 
     /** Edit (patch) user information */
 
     static async editUser(username, password, email) {
-        let res = await this.request(`users/${username}`, { username, password, email }, "patch");
-        return res.user;
+        try {
+            let res = await this.request(`users/${username}`, { username, password, email }, "patch");
+            return res.user;
+        } catch (err) {
+            console.error("error editing user information", err);
+        }
     }
 
 }
 
-// for now, put token ("testuser" / "password" on class)
 TransconnectApi.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
     "SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
     "FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc";

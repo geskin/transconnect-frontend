@@ -25,15 +25,18 @@ function App() {
     }
 
     let payload = jwtDecode(token);
-    const { username, role } = payload; // Extract username and isAdmin from the token
+    console.debug(payload);
+    const { username, role } = payload; // Extract username and role from the token
 
-    // Set the current user with username and isAdmin
+    // Set the current user with username and role
     setCurrUser({ username, role });
+
+    console.debug(currUser);
   }, [token]);
 
-  // Fetch additional user details only after curr_user is set
+  // Fetch additional user details on current user only after currUser is set
   useEffect(() => {
-    if (!currUser || !currUser.username) return; // Wait until curr_user is fully initialized
+    if (!currUser || !currUser.username) return; // Wait until currUser is fully initialized
 
     const fetchUser = async () => {
       try {
@@ -73,12 +76,20 @@ function App() {
     setCurrUser(null);
   }
 
+  const editUser = async (user) => {
+
+  }
+
+  const createPost = async (post) => {
+
+  }
+
   return (
     <>
       <BrowserRouter>
-        <NavBar currUser={currUser} />
+        <NavBar />
         <main>
-          <RoutesList signup={signup} login={login} logout={logout} />
+          <RoutesList signup={signup} login={login} logout={logout} editUser={editUser} createPost={createPost} />
         </main>
       </BrowserRouter>
     </>

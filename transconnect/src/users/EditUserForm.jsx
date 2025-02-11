@@ -1,4 +1,4 @@
-const EditUserForm = () => {
+const EditUserForm = ({ editUser }) => {
 
 }
 

@@ -13,8 +13,8 @@ nav {
     text-align: left;
     font-size: 1.5rem;
     font-weight: bold;
-    color: #f0f2f5;
-    text-decoration: none;
+    color: -webkit-linear-gradient(lightpink, lightblue);
+    /* text-shadow: 2px 2px 5px rgb(52, 48, 47); */
     background: -webkit-linear-gradient(lightpink, lightblue);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

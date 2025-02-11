@@ -14,7 +14,7 @@ import "./css/Homepage.css";
 
 function Homepage() {
     const { currUser } = useContext(UserContext);
-    console.debug("Homepage", "currentUser=", currUser);
+    console.debug("Homepage", "currUser=", currUser);
 
     return (
         <div className="Homepage">
@@ -23,7 +23,7 @@ function Homepage() {
                 <p className="lead">Connection with a cause.</p>
                 {currUser
                     ? <h2>
-                        Welcome Back, {currUser.firstName || currUser.username}!
+                        Welcome Back, {currUser.username}!
                     </h2>
                     : (
                         <p>
@@ -34,7 +34,7 @@ function Homepage() {
                                 </Link>
                             </button>
                             <button>
-                                <Link className="btn btn-primary fw-bold"
+                                <Link className="btn btn-primary fw-bold me-3"
                                     to="/register">
                                     Sign up
                                 </Link>
