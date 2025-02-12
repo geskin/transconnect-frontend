@@ -19,7 +19,7 @@ const PostsList = () => {
         const fetchPosts = async () => {
             try {
                 const data = await TransconnectApi.getPosts();
-                setPosts(data);
+                if (data) setPosts(data);
             } catch (err) {
                 console.error("Error fetching posts", err);
             }
@@ -27,7 +27,8 @@ const PostsList = () => {
         const fetchTags = async () => {
             try {
                 const data = await TransconnectApi.getTags();
-                setTags(data);
+                let tagList = data.map(t => (t.name));
+                setTags(tagList);
             } catch (err) {
                 console.error("Error fetching tags", err);
             }
@@ -52,6 +53,7 @@ const PostsList = () => {
     return (
         <div>
             <div>
+                <button value='' onClick={handleClick}>X</button>
                 {tags.map(t => (<button name={t} value={t} onClick={handleClick}>{t}</button>))}
             </div>
             <div>

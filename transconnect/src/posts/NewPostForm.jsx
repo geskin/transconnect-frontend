@@ -1,13 +1,33 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import TransconnectApi from "../api";
+import UserContext from "../UserContext";
 
 const NewPostForm = ({ createPost }) => {
     const [formData, setFormData] = useState({
         title: "",
         content: "",
-        tags: []
+        tag: "" // tags: []
     });
+    const [tags, setTags] = useState([]);
+    const { currUser } = useContext(UserContext);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!currUser) {
+            navigate("/");
+        }
+        const fetchTags = async () => {
+            try {
+                const data = await TransconnectApi.getTags();
+                let tagList = data.map(t => (t.name));
+                setTags(tagList);
+            } catch (err) {
+                console.error("Error fetching tags", err);
+            }
+        }
+        fetchTags();
+    }, [currUser, navigate]);
 
     const handleChange = e => {
         const { name, value } = e.target;
@@ -23,12 +43,12 @@ const NewPostForm = ({ createPost }) => {
         setFormData({
             title: "",
             content: "",
-            tags: []
+            tag: "" //tags: []
         });
         navigate("/posts");
     };
 
-    //where tags are a checkbox input where you can select up to 3 tags
+    //where tags are a checkbox input (change from radio) where you can select up to 3 tags
 
     return (
         <div className="Form">
@@ -58,6 +78,29 @@ const NewPostForm = ({ createPost }) => {
                                     id="content"
                                     className="form-control"
                                 />
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label"><b>Choose a tag:</b></label>
+                                {tags.map(t => (
+                                    <div key={t.name} className="form-check">
+                                        <input
+                                            onChange={handleChange}
+                                            type="radio"
+                                            name="tag"
+                                            value={t.name}
+                                            id={t.name}
+                                            checked={formData.tag === t.name} // Make it a controlled component
+                                            className="form-check-input"
+                                        />
+                                        <label className="form-check-label" htmlFor={t.name}>{t.name}</label>
+                                    </div>
+                                ))}
+                                {formData.tag && (
+                                    <button type="button" onClick={() => setFormData(fData => ({ ...fData, tag: "" }))}
+                                        className="btn btn-outline-danger btn-sm mt-2">
+                                        X Clear Selection
+                                    </button>
+                                )}
                             </div>
                             <div className="d-grid">
                                 <button type="submit" className="btn btn-primary">
