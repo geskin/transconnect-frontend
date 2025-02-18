@@ -70,9 +70,9 @@ class TransconnectApi {
      * optionally filter by tag
      */
 
-    static async getPosts(tag = '') { // tag = [] given an array of tags 
+    static async getPosts(tags = []) { // tag = [] given an array of tags 
         try {
-            const queryParams = tag ? { tag: tag } : {};
+            const queryParams = tags ? { tags: tags } : {};
             let res = await this.request('posts', queryParams);
             return res.posts;
         } catch (err) {
@@ -93,9 +93,9 @@ class TransconnectApi {
 
     /** Make a post */
 
-    static async createPost(post) {
+    static async createPost(post, user) {
         try {
-            let res = await this.request('posts', post, 'post');
+            let res = await this.request('posts', { post, user }, 'post');
             return res.post;
         } catch (err) {
             console.error("error creating post", err);
@@ -148,7 +148,7 @@ class TransconnectApi {
         }
     }
 
-    // TAGS
+    // TAGS and TYPES
 
     static async getTags() {
         try {
@@ -156,6 +156,15 @@ class TransconnectApi {
             return res.tags;
         } catch (err) {
             console.error("error fetching tags", err);
+        }
+    }
+
+    static async getTypes() {
+        try {
+            let res = await this.request('resources/types');
+            return res.types;
+        } catch (err) {
+            console.error("error fetching resource types", err);
         }
     }
 

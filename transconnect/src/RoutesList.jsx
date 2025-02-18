@@ -11,6 +11,7 @@ import ResourceDetail from "./resources/ResourceDetail";
 import Logout from "./auth/Logout";
 import NewPostForm from "./posts/NewPostForm";
 import NewResourceForm from "./resources/NewResourceForm";
+import PostDetail from "./posts/PostDetail";
 
 const RoutesList = ({ signup, login, logout, editUser, createPost, submitResource }) => {
     return (
@@ -21,6 +22,7 @@ const RoutesList = ({ signup, login, logout, editUser, createPost, submitResourc
             <Route path="/users/:username" element={<Profile />} />
             <Route path="/users/:username/edit" element={<EditUserForm editUser={editUser} />} />
             <Route path="/posts" element={<PostsList />} />
+            <Route path="/posts/:post_id" element={<PostDetail />} />
             <Route path="/posts/new" element={<NewPostForm createPost={createPost} />} />
             <Route path="/resources" element={<ResourceList />} />
             <Route path="/resources/new" element={<NewResourceForm submitResource={submitResource} />} />

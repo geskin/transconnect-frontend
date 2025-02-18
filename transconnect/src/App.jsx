@@ -82,7 +82,7 @@ function App() {
 
   const createPost = async (post) => { //make this generalizable for posts and resources
     try {
-      const data = await TransconnectApi.createPost(post);
+      const data = await TransconnectApi.createPost(post, currUser);
       console.debug(data);
     } catch (err) {
       console.error("Error creating post", err);

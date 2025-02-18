@@ -7,7 +7,7 @@ const NewPostForm = ({ createPost }) => {
     const [formData, setFormData] = useState({
         title: "",
         content: "",
-        tag: "" // tags: []
+        tag: '' //tags: []
     });
     const [tags, setTags] = useState([]);
     const { currUser } = useContext(UserContext);
@@ -86,19 +86,19 @@ const NewPostForm = ({ createPost }) => {
                                         <input
                                             onChange={handleChange}
                                             type="radio"
-                                            name="tag"
+                                            name="tags"
                                             value={t.name}
                                             id={t.name}
-                                            checked={formData.tag === t.name} // Makes it a controlled component (form data is handled by the component not DOM)
+                                            checked={formData.tags === t.name} // Makes it a controlled component (form data is handled by the component not DOM)
                                             className="form-check-input"
                                         />
                                         <label className="form-check-label" htmlFor={t.name}>{t.name}</label>
                                     </div>
                                 ))}
-                                {formData.tag && (
-                                    <button type="button" onClick={() => setFormData(fData => ({ ...fData, tag: "" }))}
+                                {formData.tags && (
+                                    <button type="button" onClick={() => setFormData(fData => ({ ...fData, tags: [] }))}
                                         className="btn btn-outline-danger btn-sm mt-2">
-                                        X Clear Selection
+                                        Clear Selection
                                     </button>
                                 )}
                             </div>
