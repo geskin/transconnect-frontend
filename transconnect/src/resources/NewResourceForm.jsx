@@ -8,7 +8,7 @@ const NewResourceForm = ({ submitResource }) => {
         name: "",
         description: "",
         url: "",
-        type: []
+        types: []
     });
     const [types, setTypes] = useState([]);
     const { currUser } = useContext(UserContext);
@@ -38,6 +38,23 @@ const NewResourceForm = ({ submitResource }) => {
         }));
     };
 
+    const handleCheckbox = e => {
+        if (formData.types.includes(e.target.value)) {
+            //remove e.target.value from array
+            const filteredTypes = formData.types.filter(t => (t !== e.target.value)); //include everything in the types array except for e.target.value
+            setFormData(formData => ({
+                ...formData,
+                types: filteredTypes
+            }));
+        } else {
+            setFormData(formData => ({
+                ...formData,
+                types: [...formData.types, e.target.value]
+            }));
+        }
+
+    }
+
     const gatherInput = e => {
         e.preventDefault();
         submitResource({ ...formData });
@@ -45,12 +62,17 @@ const NewResourceForm = ({ submitResource }) => {
             name: "",
             description: "",
             url: "",
-            type: []
+            types: []
         });
         navigate("/resources");
     };
 
-    //where tags are a checkbox input (change from radio) where you can select up to 3 tags
+    // {formData.types && (
+    //     <button type="button" onClick={() => setFormData(fData => ({ ...fData, types: [] }))}
+    //         className="btn btn-outline-danger btn-sm mt-2">
+    //         Clear Selection
+    //     </button>
+    // )}
 
     return (
         <div className="Form">
@@ -83,26 +105,20 @@ const NewResourceForm = ({ submitResource }) => {
                             </div>
                             <div className="mb-3">
                                 <label className="form-label"><b>Type of resource:</b></label>
-                                {types.map(t => (
-                                    <div key={t.name} className="form-check">
+                                {types.map((t, idx) => (
+                                    <div key={t} className="form-check">
                                         <input
-                                            onChange={handleChange}
+                                            onChange={handleCheckbox}
                                             type="checkbox"
-                                            name="tags"
-                                            value={t.name}
-                                            id={t.name}
-                                            checked={formData.type === t.name} //this needs to be changed so it can take an array instead of string
+                                            name={t}
+                                            value={t}
+                                            id={t}
+                                            checked={formData.types.includes(t)}
                                             className="form-check-input"
                                         />
-                                        <label className="form-check-label" htmlFor={t.name}>{t.name}</label>
+                                        <label className="form-check-label" htmlFor={t}>{t}</label>
                                     </div>
                                 ))}
-                                {formData.tags && (
-                                    <button type="button" onClick={() => setFormData(fData => ({ ...fData, tags: [] }))}
-                                        className="btn btn-outline-danger btn-sm mt-2">
-                                        Clear Selection
-                                    </button>
-                                )}
                             </div>
                             <div className="d-grid">
                                 <button type="submit" className="btn btn-primary">

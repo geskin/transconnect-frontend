@@ -43,9 +43,9 @@ class TransconnectApi {
      * optionally filter by type
      */
 
-    static async getResources(type = '') {
+    static async getResources(types = []) {
         try {
-            const queryParams = type ? { type: type } : {};
+            const queryParams = types ? { types: types } : {};
             let res = await this.request('resources', queryParams);
             return res.resources;
         } catch (err) {

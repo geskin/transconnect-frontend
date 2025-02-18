@@ -6,6 +6,8 @@ const PostCard = ({
     content,
     user,
     comments }) => {
+
+
     return (
         <Link className="card" to={`/posts/${id}`}>
             <div className="card-body">
