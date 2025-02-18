@@ -63,11 +63,13 @@ const PostsList = () => {
                             {posts.map(p => (
                                 <PostCard
                                     key={p.id}
+                                    id={p.id}
                                     title={p.title}
                                     createdAt={p.createdAt}
                                     editedAt={p.editedAt}
                                     content={p.content}
                                     user={p.user}
+                                    comments={p.comments}
                                 />
                             ))}
                         </div>

@@ -80,8 +80,22 @@ function App() {
 
   }
 
-  const createPost = async (post) => {
+  const createPost = async (post) => { //make this generalizable for posts and resources
+    try {
+      const data = await TransconnectApi.createPost(post);
+      console.debug(data);
+    } catch (err) {
+      console.error("Error creating post", err);
+    }
+  }
 
+  const submitResource = async (resource) => {
+    try {
+      const data = await TransconnectApi.submitResource(resource);
+      console.debug(data);
+    } catch (err) {
+      console.error("Error submitting resource", err);
+    }
   }
 
   return (
@@ -89,7 +103,7 @@ function App() {
       <BrowserRouter>
         <NavBar />
         <main>
-          <RoutesList signup={signup} login={login} logout={logout} editUser={editUser} createPost={createPost} />
+          <RoutesList signup={signup} login={login} logout={logout} editUser={editUser} createPost={createPost} submitResource={submitResource} />
         </main>
       </BrowserRouter>
     </>

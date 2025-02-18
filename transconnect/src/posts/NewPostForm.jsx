@@ -53,7 +53,7 @@ const NewPostForm = ({ createPost }) => {
     return (
         <div className="Form">
             <div className="container col-md-6 offset-md-3 col-lg-4 offset-lg-4">
-                <h2 className="mb-3">Sign Up</h2>
+                <h2 className="mb-3">New Post</h2>
                 <div className="card">
                     <div className="card-body">
                         <form onSubmit={gatherInput}>
@@ -89,7 +89,7 @@ const NewPostForm = ({ createPost }) => {
                                             name="tag"
                                             value={t.name}
                                             id={t.name}
-                                            checked={formData.tag === t.name} // Make it a controlled component
+                                            checked={formData.tag === t.name} // Makes it a controlled component (form data is handled by the component not DOM)
                                             className="form-check-input"
                                         />
                                         <label className="form-check-label" htmlFor={t.name}>{t.name}</label>

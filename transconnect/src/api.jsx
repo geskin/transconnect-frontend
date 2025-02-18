@@ -35,7 +35,34 @@ class TransconnectApi {
         }
     }
 
-    // Individual API routes
+    /** Individual API routes */
+
+    //RESOURCES routes
+
+    /** Get all resources
+     * optionally filter by type
+     */
+
+    static async getResources(type = '') {
+        try {
+            const queryParams = type ? { type: type } : {};
+            let res = await this.request('resources', queryParams);
+            return res.resources;
+        } catch (err) {
+            console.error("error fetching resources", err);
+        }
+    }
+
+    /** Post a resource (for review) */
+
+    static async submitResource(resource) {
+        try {
+            let res = await this.request('resources', resource, 'post');
+            return res.resource;
+        } catch (err) {
+            console.error("error submitting resource", err);
+        }
+    }
 
     //POSTS routes
 
@@ -53,6 +80,17 @@ class TransconnectApi {
         }
     }
 
+    /** Get a single post by id */
+
+    static async getPost(id) {
+        try {
+            let res = await this.request(`posts/${id}`);
+            return res.post;
+        } catch (err) {
+            console.error(`error fetching post #${id}`, err);
+        }
+    }
+
     /** Make a post */
 
     static async createPost(post) {
@@ -63,6 +101,8 @@ class TransconnectApi {
             console.error("error creating post", err);
         }
     }
+
+    /** Edit a post */
 
     static async editPost(postId, post) {
         try {
