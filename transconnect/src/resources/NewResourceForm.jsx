@@ -21,6 +21,7 @@ const NewResourceForm = ({ submitResource }) => {
         const fetchTypes = async () => {
             try {
                 const data = await TransconnectApi.getTypes();
+                console.debug(data);
                 let typeList = data.map(t => (t.name));
                 setTypes(typeList);
             } catch (err) {
@@ -57,7 +58,7 @@ const NewResourceForm = ({ submitResource }) => {
 
     const gatherInput = e => {
         e.preventDefault();
-        submitResource({ ...formData });
+        submitResource({ ...formData, userId: currUser.id });
         setFormData({
             name: "",
             description: "",
@@ -104,8 +105,19 @@ const NewResourceForm = ({ submitResource }) => {
                                 />
                             </div>
                             <div className="mb-3">
-                                <label className="form-label"><b>Type of resource:</b></label>
-                                {types.map((t, idx) => (
+                                <label className="form-label" htmlFor="url"><b>{`URL (if applicable)`}</b></label>
+                                <input
+                                    onChange={handleChange}
+                                    type="text"
+                                    name="url"
+                                    value={formData.url}
+                                    id="url"
+                                    className="form-control"
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label"><b>Resource type:</b></label>
+                                {types.map((t) => (
                                     <div key={t} className="form-check">
                                         <input
                                             onChange={handleCheckbox}

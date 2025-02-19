@@ -103,6 +103,7 @@ const ResourceList = () => {
                                     name={r.name}
                                     description={r.description}
                                     url={r.url}
+                                    approved={r.approved}
                                 />
                             ))}
                         </div>

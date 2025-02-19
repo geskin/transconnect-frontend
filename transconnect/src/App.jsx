@@ -51,6 +51,7 @@ function App() {
     };
 
     fetchUser();
+    console.debug(currUser);
   }, [currUser?.username]);
 
   const login = async (username, password) => {

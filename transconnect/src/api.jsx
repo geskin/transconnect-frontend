@@ -53,10 +53,22 @@ class TransconnectApi {
         }
     }
 
+    /** Get a single resource by id */
+
+    static async getResource(id) {
+        try {
+            let res = await this.request(`resources/${id}`);
+            return res.resource;
+        } catch (err) {
+            console.error(`error fetching resource: id #${id}`, err);
+        }
+    }
+
     /** Post a resource (for review) */
 
     static async submitResource(resource) {
         try {
+            console.debug(resource);
             let res = await this.request('resources', resource, 'post');
             return res.resource;
         } catch (err) {
