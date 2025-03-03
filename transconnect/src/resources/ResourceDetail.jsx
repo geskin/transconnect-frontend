@@ -1,24 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import TransconnectApi from "../api";
 import UserContext from "../UserContext";
 
 const ResourceDetail = () => {
     const params = useParams();
-    console.debug(params);
     const id = params.id;
     const [resource, setResource] = useState({});
     const { currUser } = useContext(UserContext);
+    console.debug("Resource detail", currUser);
     const navigate = useNavigate();
 
-
     useEffect(() => {
+        console.debug("useEffect triggered with id:", id);
+
         const fetchResource = async () => {
             try {
                 const resource = await TransconnectApi.getResource(id);
-                if (resource) {
-                    setResource(resource);
-                }
+                console.debug(resource);
+                setResource(resource);
             } catch (err) {
                 console.error("Error fetching resource", err);
             }

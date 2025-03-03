@@ -9,36 +9,37 @@ function NavBar() {
 
     return (
         <div>
-            <Navbar expand="md">
-                <NavLink exact="true" to="/" className="navbar-brand">
+            <Navbar expand="md" className="d-flex align-items-center justify-content-between px-3">
+                <NavLink exact="true" to="/" className="navbar-brand nav-item">
                     TransConnect
                 </NavLink>
-                {currUser ?
-                    <Nav className="navbar-nav ms-auto" navbar>
-                        <NavItem className="nav-item me-4">
-                            <NavLink to="/resources">Resources</NavLink>
-                        </NavItem>
-                        <NavItem className="nav-item me-4">
-                            <NavLink to="/posts">Posts</NavLink>
-                        </NavItem>
-                        <NavItem className="nav-item me-4">
-                            <NavLink to={`/users/${currUser.username}`}>Your profile</NavLink>
-                        </NavItem>
-                        <NavItem className="nav-item me-4">
-                            <NavLink to="/logout">{`Logout ${currUser.username}`}</NavLink>
-                        </NavItem>
-                    </Nav>
-                    :
-                    <Nav className="navbar-nav ms-auto" navbar>
-                        <NavItem className="nav-item me-4">
-                            <NavLink to="/login">Login</NavLink>
-                        </NavItem>
-                        <NavItem className="nav-item me-4">
-                            <NavLink to="/register">Signup</NavLink>
-                        </NavItem>
-                    </Nav>
-                }
-
+                <Nav className="ms-auto d-flex flex-row" navbar>
+                    {currUser ? (
+                        <>
+                            <NavItem className="nav-item me-4">
+                                <NavLink to="/resources">Resources</NavLink>
+                            </NavItem>
+                            <NavItem className="nav-item me-4">
+                                <NavLink to="/posts">Posts</NavLink>
+                            </NavItem>
+                            <NavItem className="nav-item me-4">
+                                <NavLink to={`/users/${currUser.username}`}>Your profile</NavLink>
+                            </NavItem>
+                            <NavItem className="nav-item me-4">
+                                <NavLink to="/logout">{`Logout ${currUser.username}`}</NavLink>
+                            </NavItem>
+                        </>
+                    ) : (
+                        <>
+                            <NavItem className="nav-item me-4">
+                                <NavLink to="/login">Login</NavLink>
+                            </NavItem>
+                            <NavItem className="nav-item me-4">
+                                <NavLink to="/register">Signup</NavLink>
+                            </NavItem>
+                        </>
+                    )}
+                </Nav>
             </Navbar>
         </div>
     );

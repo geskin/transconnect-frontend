@@ -18,8 +18,11 @@ const ResourceList = () => {
         }
         const fetchResources = async () => {
             try {
-                const data = await TransconnectApi.getResources();
-                if (data) setResources(data);
+                let data = await TransconnectApi.getResources();
+                if (currUser.role === 'USER') {
+                    data = data.filter(r => r.approved); // Only approved resources for non-admin users
+                }
+                setResources(data);
             } catch (err) {
                 console.error("Error fetching resources", err);
             }
@@ -65,6 +68,8 @@ const ResourceList = () => {
         }
     };
 
+    console.debug(resources);
+
     return (
         <div>
             <div>
@@ -103,6 +108,8 @@ const ResourceList = () => {
                                     name={r.name}
                                     description={r.description}
                                     url={r.url}
+                                    types={r.types}
+                                    userId={r.userId}
                                     approved={r.approved}
                                 />
                             ))}

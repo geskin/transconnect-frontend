@@ -1,38 +1,54 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import UserContext from "../UserContext";
-import { useNavigate } from "react-router-dom";
 import TransconnectApi from "../api";
 
-const NewResourceForm = ({ submitResource }) => {
+const EditResourceForm = ({ updateResource }) => {
+    const params = useParams();
+    const id = params.id;
+    console.debug("id:", id);
+    const { currUser } = useContext(UserContext);
+    const navigate = useNavigate();
+    const [types, setTypes] = useState([]);
     const [formData, setFormData] = useState({
         name: "",
         description: "",
         url: "",
         types: []
     });
-    const [types, setTypes] = useState([]);
-    const { currUser } = useContext(UserContext);
-    const navigate = useNavigate();
 
     useEffect(() => {
-        if (!currUser) {
-            navigate("/");
+        if (currUser.role !== 'ADMIN' || !currUser) navigate('/resources');
+
+        const fetchResource = async () => {
+            try {
+                const resource = await TransconnectApi.getResource(id);
+                console.debug(resource); //resource.types doesn't exist?
+                setFormData({
+                    name: resource.name,
+                    description: resource.description,
+                    url: resource.url,
+                    types: resource.types
+                });
+            } catch (err) {
+                console.error("Error fetching resource", err);
+            }
         }
         const fetchTypes = async () => {
             try {
                 const data = await TransconnectApi.getTypes();
-                console.debug(data);
                 let typeList = data.map(t => (t.name));
                 setTypes(typeList);
             } catch (err) {
                 console.error("Error fetching resource types", err);
             }
         }
+        fetchResource();
         fetchTypes();
-    }, [currUser]);
+    }, [id]);
 
-    const handleChange = e => {
-        const { name, value } = e.target;
+    const handleChange = evt => {
+        const { name, value } = evt.target;
         setFormData(formData => ({
             ...formData,
             [name]: value
@@ -55,29 +71,34 @@ const NewResourceForm = ({ submitResource }) => {
         }
     }
 
-    const gatherInput = e => {
+    const gatherInput = async (e) => {
         e.preventDefault();
-        submitResource({ ...formData, userId: currUser.id });
-        setFormData({
-            name: "",
-            description: "",
-            url: "",
-            types: []
-        });
-        navigate("/resources");
-    };
+        try {
+            console.debug(formData);
+            await updateResource(id, formData);
+            // formData.name,
+            // formData.description,
+            // formData.url,
+            // formData.types);
 
-    // {formData.types && (
-    //     <button type="button" onClick={() => setFormData(fData => ({ ...fData, types: [] }))}
-    //         className="btn btn-outline-danger btn-sm mt-2">
-    //         Clear Selection
-    //     </button>
-    // )}
+            // Update the current user data in the form
+            setFormData({
+                name: formData.name,
+                description: formData.description,
+                url: formData.url,
+                types: formData.types
+            });
+
+            navigate(`/resources/${id}`); //not working -- unable to go back to resource detail
+        } catch (err) {
+            console.error("Error updating resource:", err);
+        }
+    };
 
     return (
         <div className="Form">
             <div className="container col-md-6 offset-md-3 col-lg-4 offset-lg-4">
-                <h2 className="mb-3">New Resource</h2>
+                <h2 className="mb-3">Edit Resource</h2>
                 <div className="card">
                     <div className="card-body">
                         <form onSubmit={gatherInput}>
@@ -133,7 +154,7 @@ const NewResourceForm = ({ submitResource }) => {
                             </div>
                             <div className="d-grid">
                                 <button type="submit" className="btn btn-primary">
-                                    Submit!
+                                    Update resource
                                 </button>
                             </div>
                         </form>
@@ -142,6 +163,7 @@ const NewResourceForm = ({ submitResource }) => {
             </div>
         </div>
     );
+
 }
 
-export default NewResourceForm;
+export default EditResourceForm;

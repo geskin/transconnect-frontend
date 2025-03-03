@@ -1,37 +1,60 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import TransconnectApi from "../api";
+import { useNavigate, useParams } from "react-router-dom";
 import UserContext from "../UserContext";
+import TransconnectApi from "../api";
 
-const NewPostForm = ({ createPost }) => {
+const EditPostForm = ({ updatePost }) => {
+    const params = useParams();
+    const id = params.id;
+    console.debug("id:", id);
+    const { currUser } = useContext(UserContext);
+    const navigate = useNavigate();
+    const [tags, setTags] = useState([]);
+    const [post, setPost] = useState({});
     const [formData, setFormData] = useState({
         title: "",
         content: "",
         tags: []
     });
-    const [tags, setTags] = useState([]);
-    const { currUser } = useContext(UserContext);
-    const navigate = useNavigate();
 
+
+    //how to do this so that if it isn't admin or currUser's post to navigate away?
     useEffect(() => {
-        if (!currUser) {
-            navigate("/");
+        if (currUser.role !== 'ADMIN' || !currUser) navigate('/posts');
+
+        const fetchPost = async () => {
+            try {
+                const post = await TransconnectApi.getPost(id);
+                console.debug(post); //does this include userId?
+                setPost(post);
+                setFormData({
+                    title: post.title,
+                    content: post.content,
+                    tags: post.tags
+                });
+            } catch (err) {
+                console.error("Error fetching post", err);
+            }
         }
         const fetchTags = async () => {
             try {
                 const data = await TransconnectApi.getTags();
-                console.debug(data);
                 let tagList = data.map(t => (t.name));
                 setTags(tagList);
             } catch (err) {
                 console.error("Error fetching tags", err);
             }
         }
+        fetchPost();
         fetchTags();
+    }, [id, currUser]);
+
+    useEffect(() => {
+        if (currUser.id !== post.userId || currUser.role !== 'ADMIN') navigate('/posts');
     }, [currUser]);
 
-    const handleChange = e => {
-        const { name, value } = e.target;
+    const handleChange = evt => {
+        const { name, value } = evt.target;
         setFormData(formData => ({
             ...formData,
             [name]: value
@@ -41,7 +64,7 @@ const NewPostForm = ({ createPost }) => {
     const handleCheckbox = e => {
         if (formData.tags.includes(e.target.value)) {
             //remove e.target.value from array
-            const filteredTags = formData.tags.filter(t => (t !== e.target.value));
+            const filteredTags = formData.tags.filter(t => (t !== e.target.value)); //include everything in the types array except for e.target.value
             setFormData(formData => ({
                 ...formData,
                 tags: filteredTags
@@ -54,21 +77,31 @@ const NewPostForm = ({ createPost }) => {
         }
     }
 
-    const gatherInput = e => {
+    const gatherInput = async (e) => {
         e.preventDefault();
-        createPost({ ...formData });
-        setFormData({
-            title: "",
-            content: "",
-            tags: []
-        });
-        navigate("/posts");
+        try {
+            await updateResource(
+                formData.title,
+                formData.content,
+                formData.tags);
+
+            // Update the current user data in the form
+            setFormData({
+                title: formData.title,
+                content: formData.content,
+                tags: formData.tags
+            });
+
+            navigate(`/posts/${id}`);
+        } catch (err) {
+            console.error("Error updating post:", err);
+        }
     };
 
     return (
         <div className="Form">
             <div className="container col-md-6 offset-md-3 col-lg-4 offset-lg-4">
-                <h2 className="mb-3">New Post</h2>
+                <h2 className="mb-3">Edit Post</h2>
                 <div className="card">
                     <div className="card-body">
                         <form onSubmit={gatherInput}>
@@ -113,7 +146,7 @@ const NewPostForm = ({ createPost }) => {
                             </div>
                             <div className="d-grid">
                                 <button type="submit" className="btn btn-primary">
-                                    Post!
+                                    Update post
                                 </button>
                             </div>
                         </form>
@@ -122,6 +155,7 @@ const NewPostForm = ({ createPost }) => {
             </div>
         </div>
     );
+
 }
 
-export default NewPostForm;
+export default EditPostForm;

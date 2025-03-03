@@ -78,7 +78,13 @@ function App() {
   }
 
   const editUser = async (user) => {
-
+    try {
+      const username = currUser.username;
+      const updatedUser = await TransconnectApi.editUser(username, user);
+      setCurrUser(updatedUser);
+    } catch (err) {
+      console.error("Error updating user", err);
+    }
   }
 
   const createPost = async (post) => { //make this generalizable for posts and resources
@@ -99,12 +105,21 @@ function App() {
     }
   }
 
+  const updateResource = async (id, resource) => {
+    try {
+      const data = await TransconnectApi.patchResource(id, resource);
+      console.debug(data);
+    } catch (err) {
+      console.error("Error updating resource", err);
+    }
+  }
+
   return (
     <>
       <BrowserRouter>
         <NavBar />
         <main>
-          <RoutesList signup={signup} login={login} logout={logout} editUser={editUser} createPost={createPost} submitResource={submitResource} />
+          <RoutesList signup={signup} login={login} logout={logout} editUser={editUser} createPost={createPost} submitResource={submitResource} updateResource={updateResource} />
         </main>
       </BrowserRouter>
     </>

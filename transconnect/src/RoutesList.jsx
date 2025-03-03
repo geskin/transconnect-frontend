@@ -12,8 +12,9 @@ import Logout from "./auth/Logout";
 import NewPostForm from "./posts/NewPostForm";
 import NewResourceForm from "./resources/NewResourceForm";
 import PostDetail from "./posts/PostDetail";
+import EditResourceForm from "./resources/EditResourceForm";
 
-const RoutesList = ({ signup, login, logout, editUser, createPost, submitResource }) => {
+const RoutesList = ({ signup, login, logout, editUser, createPost, submitResource, updateResource }) => {
     return (
         <Routes>
             <Route path="/" element={<Homepage />} />
@@ -22,11 +23,12 @@ const RoutesList = ({ signup, login, logout, editUser, createPost, submitResourc
             <Route path="/users/:username" element={<Profile />} />
             <Route path="/users/:username/edit" element={<EditUserForm editUser={editUser} />} />
             <Route path="/posts" element={<PostsList />} />
-            <Route path="/posts/:post_id" element={<PostDetail />} />
+            <Route path="/posts/:id" element={<PostDetail />} />
             <Route path="/posts/new" element={<NewPostForm createPost={createPost} />} />
             <Route path="/resources" element={<ResourceList />} />
             <Route path="/resources/new" element={<NewResourceForm submitResource={submitResource} />} />
-            <Route path="/resources/:name" element={<ResourceDetail />} />
+            <Route path="/resources/:id" element={<ResourceDetail />} />
+            <Route path="resources/:id/edit" element={<EditResourceForm updateResource={updateResource} />} />
             <Route path="/logout" element={<Logout logout={logout} />} />
             <Route path="*" element={<Navigate to="/" />} />
         </Routes>

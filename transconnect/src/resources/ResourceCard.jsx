@@ -2,20 +2,39 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "../css/ResourceCard.css";
 import UserContext from "../UserContext";
+import TransconnectApi from "../api";
 
-const ResourceCard = ({ id, name, description, url, approved }) => {
+const ResourceCard = ({ id, name, description, url, types, userId, approved }) => {
     const { currUser } = useContext(UserContext);
     const [approval, setApproval] = useState(approved);
+    console.debug(types);
 
     useEffect(() => { //re-render card if approval state changes
-
+        if (approval) {
+            setApproval(true);
+        } else {
+            setApproval(false);
+        }
     }, [approval]);
 
-    const approveResource = () => {
-        if (approval) { //if already approved
-            setApproval(false); // how to set approval state of resource globally -> need to only show approved ones to regular user in ResourceList
+    const approveResource = async (e) => {
+        e.preventDefault();
+        if (!approval) {
+            try {
+                const data = await TransconnectApi.approve(approval, id);
+                console.log(`Resource successfully approved.`);
+                setApproval(true);
+            } catch (err) {
+                console.error("Error approving resource", err);
+            }
         } else {
-            setApproval(true);
+            try {
+                const data = await TransconnectApi.approve(approval, id);
+                console.log(`Resource pending approval.`);
+                setApproval(false);
+            } catch (err) {
+                console.error("Error recinding approval", err);
+            }
         }
     }
 
@@ -32,13 +51,16 @@ const ResourceCard = ({ id, name, description, url, approved }) => {
                     }
                 </h2>
                 <p className="text-start"><i>{description}</i></p>
+                <ul>
+                    {types.map(t => <li>{t.name}</li>)}
+                </ul>
 
                 {currUser.role === 'ADMIN' ?
                     <div>
                         {approved ?
-                            <button onClick={approveResource}>Approved</button>
+                            <button className="btn btn-danger fw-bold text-uppercase float-end" onClick={approveResource}>Approved</button>
                             :
-                            <button onClick={approveResource}>Approve</button>
+                            <button className="btn btn-danger fw-bold text-uppercase float-end" onClick={approveResource}>Approve</button>
                         }
                         <Link to={`/resources/${id}/edit`}>Edit</Link>
                         <Link to={`/resources/${id}`}>Details</Link>

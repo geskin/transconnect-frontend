@@ -19,7 +19,7 @@ const PostsList = () => {
         const fetchPosts = async () => {
             try {
                 const data = await TransconnectApi.getPosts();
-                if (data) setPosts(data);
+                setPosts(data);
             } catch (err) {
                 console.error("Error fetching posts", err);
             }

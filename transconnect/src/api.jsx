@@ -68,11 +68,30 @@ class TransconnectApi {
 
     static async submitResource(resource) {
         try {
-            console.debug(resource);
             let res = await this.request('resources', resource, 'post');
             return res.resource;
         } catch (err) {
             console.error("error submitting resource", err);
+        }
+    }
+
+    static async patchResource(id, resource) {
+        try {
+            let res = await this.request(`resources/${id}`, resource, 'patch');
+            return res.resource;
+        } catch (err) {
+            console.error("error submitting resource", err);
+        }
+    }
+
+    /** Approve (or recind approval of) a resource */
+
+    static async approve(approved, id) {
+        try {
+            let res = await this.request(`resources/${id}`, approved, 'patch');
+            return res.resource;
+        } catch (err) {
+            console.error("error changing approval status", err);
         }
     }
 
