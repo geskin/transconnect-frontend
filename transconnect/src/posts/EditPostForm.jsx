@@ -3,10 +3,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import UserContext from "../UserContext";
 import TransconnectApi from "../api";
 
-const EditPostForm = ({ updatePost }) => {
-    const params = useParams();
-    const id = params.id;
-    console.debug("id:", id);
+/** EditPostForm: form for editing a post
+ * 
+ * auth required: admin or creator of post
+ */
+
+const EditPostForm = ({ editPost }) => {
+    const { id } = useParams();
+    console.debug("post id:", id);
     const { currUser } = useContext(UserContext);
     const navigate = useNavigate();
     const [tags, setTags] = useState([]);
@@ -80,13 +84,9 @@ const EditPostForm = ({ updatePost }) => {
     const gatherInput = async (e) => {
         e.preventDefault();
         try {
-            await updateResource(
-                formData.title,
-                formData.content,
-                formData.tags);
+            await editPost(id, formData);
 
-            // Update the current user data in the form
-            setFormData({
+            setFormData({ //do I need this?
                 title: formData.title,
                 content: formData.content,
                 tags: formData.tags

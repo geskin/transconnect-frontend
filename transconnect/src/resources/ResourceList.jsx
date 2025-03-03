@@ -4,18 +4,21 @@ import { Link, useNavigate } from "react-router-dom";
 import TransconnectApi from "../api";
 import ResourceCard from "./ResourceCard";
 
+/** ResourceList: displays cards for every existing resource
+ * 
+ * auth required: none
+ * 
+ * unapproved resources and certain functionalities are only visible/accessible to admins
+  */
+
 const ResourceList = () => {
     const [resources, setResources] = useState([]);
     const [types, setTypes] = useState([]);
     const [searchType, setSearchType] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const { currUser } = useContext(UserContext);
-    const navigate = useNavigate();
 
     useEffect(() => {
-        if (!currUser) {
-            navigate("/");
-        }
         const fetchResources = async () => {
             try {
                 let data = await TransconnectApi.getResources();

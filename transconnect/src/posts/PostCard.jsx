@@ -1,3 +1,12 @@
+import React from "react";
+import { Link } from "react-router-dom";
+import { formatDate } from "../utils/formatDate";
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+
+
+/** PostCard: inidividual card for a resource. List of these cards is shown in PostsList */
+
 const PostCard = ({
     title,
     id,
@@ -8,16 +17,18 @@ const PostCard = ({
     comments }) => {
 
     return (
-        <Link className="card" to={`/posts/${id}`}>
-            <div className="card-body">
-                <h3>{user.username}</h3>
-                <h6 className="card-title text-start">
-                    {title}
-                </h6>
+        <Card className="card" >
+            <CardContent className="card-body">
+                <Link to={`/users/${user.username}`} ><h3>{user.username}</h3></Link>
+                <Link to={`/posts/${id}`}>
+                    <h3 className="card-title text-start">
+                        {title}
+                    </h3>
+                </Link>
                 <p className="text-start"><small>{content}</small></p>
-                <i>{createdAt}</i>
-            </div>
-        </Link>
+                <i>{formatDate(createdAt)}</i>
+            </CardContent>
+        </Card>
     );
 }
 

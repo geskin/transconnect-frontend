@@ -3,6 +3,11 @@ import { useNavigate } from "react-router-dom";
 import TransconnectApi from "../api";
 import UserContext from "../UserContext";
 
+/** NewPostForm: form for submitting new post
+ * 
+ * auth required: logged in
+ */
+
 const NewPostForm = ({ createPost }) => {
     const [formData, setFormData] = useState({
         title: "",
@@ -56,7 +61,7 @@ const NewPostForm = ({ createPost }) => {
 
     const gatherInput = e => {
         e.preventDefault();
-        createPost({ ...formData });
+        createPost({ ...formData, userId: currUser.id });
         setFormData({
             title: "",
             content: "",

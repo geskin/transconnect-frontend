@@ -13,8 +13,12 @@ import NewPostForm from "./posts/NewPostForm";
 import NewResourceForm from "./resources/NewResourceForm";
 import PostDetail from "./posts/PostDetail";
 import EditResourceForm from "./resources/EditResourceForm";
+import EditPostForm from "./posts/EditPostForm";
+import BathroomList from "./bathrooms/BathroomList";
 
-const RoutesList = ({ signup, login, logout, editUser, createPost, submitResource, updateResource }) => {
+/** RoutesList: list of all app routes */
+
+const RoutesList = ({ signup, login, logout, editUser, createPost, submitResource, updateResource, editPost }) => {
     return (
         <Routes>
             <Route path="/" element={<Homepage />} />
@@ -25,10 +29,12 @@ const RoutesList = ({ signup, login, logout, editUser, createPost, submitResourc
             <Route path="/posts" element={<PostsList />} />
             <Route path="/posts/:id" element={<PostDetail />} />
             <Route path="/posts/new" element={<NewPostForm createPost={createPost} />} />
+            <Route path="/posts/:id/edit" element={<EditPostForm editPost={editPost} />} />
             <Route path="/resources" element={<ResourceList />} />
             <Route path="/resources/new" element={<NewResourceForm submitResource={submitResource} />} />
             <Route path="/resources/:id" element={<ResourceDetail />} />
-            <Route path="resources/:id/edit" element={<EditResourceForm updateResource={updateResource} />} />
+            <Route path="/resources/:id/edit" element={<EditResourceForm updateResource={updateResource} />} />
+            <Route path="/bathrooms" element={<BathroomList />} />
             <Route path="/logout" element={<Logout logout={logout} />} />
             <Route path="*" element={<Navigate to="/" />} />
         </Routes>

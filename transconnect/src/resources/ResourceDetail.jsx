@@ -3,6 +3,14 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import TransconnectApi from "../api";
 import UserContext from "../UserContext";
 
+/** ResourceDetail: displays details on a specific resource
+ * 
+ * auth required: none
+ * 
+ * an unapproved resource and certain functionality is only visible/accessible to admins
+ * (e.g. approve resource button)
+ */
+
 const ResourceDetail = () => {
     const params = useParams();
     const id = params.id;

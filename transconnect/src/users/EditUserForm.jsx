@@ -2,6 +2,11 @@ import React, { useContext, useState } from "react";
 import UserContext from "../UserContext";
 import { Navigate, useNavigate } from "react-router-dom";
 
+/** EditUserForm: displays form for updating user information and handles submission
+ * 
+ * auth required: correct user or admin
+ */
+
 const EditUserForm = ({ editUser }) => {
     const { currUser } = useContext(UserContext);
     const [formData, setFormData] = useState({
@@ -27,7 +32,7 @@ const EditUserForm = ({ editUser }) => {
         e.preventDefault();
         try {
             // Update user globally
-            editUser(...formData);
+            editUser(formData);
 
             // Update the current user data in the form
             setFormData({

@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import "../css/ResourceCard.css";
 import UserContext from "../UserContext";
 import TransconnectApi from "../api";
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+
+/** ResourceCard: the card displayed in ResourceList for each individual resource */
 
 const ResourceCard = ({ id, name, description, url, types, userId, approved }) => {
     const { currUser } = useContext(UserContext);
@@ -39,8 +43,8 @@ const ResourceCard = ({ id, name, description, url, types, userId, approved }) =
     }
 
     return (
-        <div className="ResourceCard card">
-            <div className="card-body">
+        <Card className="ResourceCard card">
+            <CardContent className="card-body">
                 <h2 className="card-title text-start">
                     {url ?
                         <Link to={url}>
@@ -70,8 +74,8 @@ const ResourceCard = ({ id, name, description, url, types, userId, approved }) =
                         <Link to={`/resources/${id}`}>Details</Link>
                     </div>
                 }
-            </div>
-        </div>
+            </CardContent>
+        </Card>
     );
 }
 

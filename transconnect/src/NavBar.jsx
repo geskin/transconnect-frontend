@@ -4,6 +4,8 @@ import { NavLink } from "react-router-dom";
 import { Navbar, Nav, NavItem } from "reactstrap";
 import UserContext from "./UserContext";
 
+/** NavBar: typical navigation bar located at the top of each page of the app */
+
 function NavBar() {
     const { currUser } = useContext(UserContext);
 
@@ -20,6 +22,9 @@ function NavBar() {
                                 <NavLink to="/resources">Resources</NavLink>
                             </NavItem>
                             <NavItem className="nav-item me-4">
+                                <NavLink to="/bathrooms">Bathrooms</NavLink>
+                            </NavItem>
+                            <NavItem className="nav-item me-4">
                                 <NavLink to="/posts">Posts</NavLink>
                             </NavItem>
                             <NavItem className="nav-item me-4">
@@ -31,6 +36,12 @@ function NavBar() {
                         </>
                     ) : (
                         <>
+                            <NavItem className="nav-item me-4">
+                                <NavLink to="/resources">Resources</NavLink>
+                            </NavItem>
+                            <NavItem className="nav-item me-4">
+                                <NavLink to="/bathrooms">Bathrooms</NavLink>
+                            </NavItem>
                             <NavItem className="nav-item me-4">
                                 <NavLink to="/login">Login</NavLink>
                             </NavItem>

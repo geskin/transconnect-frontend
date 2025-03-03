@@ -3,6 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import UserContext from "../UserContext";
 import TransconnectApi from "../api";
 
+/** EditResourceForm: form for editing a resource
+ * 
+ * auth required: admin
+ */
+
 const EditResourceForm = ({ updateResource }) => {
     const params = useParams();
     const id = params.id;

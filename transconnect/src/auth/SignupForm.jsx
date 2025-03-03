@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-/** Signup: displays signup form and handles submission */
+/** SignupForm: displays signup form and handles submission */
 
 const SignupForm = ({ signup }) => {
     const [formData, setFormData] = useState({

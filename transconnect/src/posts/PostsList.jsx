@@ -4,6 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import TransconnectApi from "../api";
 import PostCard from "./PostCard";
 
+/** PostsList: list of posts (in card form) made by users 
+ * 
+ * auth required: logged in
+*/
+
 const PostsList = () => {
     const [posts, setPosts] = useState([]);
     const [tags, setTags] = useState([]);

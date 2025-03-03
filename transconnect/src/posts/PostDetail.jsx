@@ -2,13 +2,16 @@ import React, { useContext, useEffect, useState } from "react";
 import UserContext from "../UserContext";
 import { useNavigate, useParams } from "react-router-dom";
 import TransconnectApi from "../api";
+import { formatDate } from "../utils/formatDate";
 
-/** PostDetail: shows details on a particular post including all associated comments */
+/** PostDetail: shows details on a particular post including all associated comments 
+ * 
+ * auth required: logged in
+*/
 
 const PostDetail = () => {
-    const params = useParams();
-    console.debug(params); // is it params.id or params.post_id?
-    const id = params.id;
+    const { id } = useParams();
+    console.debug(id);
     const [comments, setComments] = useState([]);
     const [post, setPost] = useState({});
     const { currUser } = useContext(UserContext);
@@ -35,6 +38,7 @@ const PostDetail = () => {
         <div className="col-md-8 offset-md-2">
             <h3 className="mb-3 white-letters">{post.title}</h3>
             <p className="white-letters">{post.content}</p>
+            <i>Posted on: {formatDate(post.createdAt)}</i>
             <div>
                 {comments ?
                     <ul>

@@ -3,6 +3,11 @@ import UserContext from "../UserContext";
 import { useNavigate } from "react-router-dom";
 import TransconnectApi from "../api";
 
+/** NewResourceForm: form for submitting a new resource
+ * 
+ * auth required: logged in
+ */
+
 const NewResourceForm = ({ submitResource }) => {
     const [formData, setFormData] = useState({
         name: "",

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-/** Login: displays login form and handles submission */
+/** LoginForm: displays login form and handles submission */
 
 const LoginForm = ({ login }) => {
     const [formData, setFormData] = useState({

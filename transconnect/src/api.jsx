@@ -75,9 +75,9 @@ class TransconnectApi {
         }
     }
 
-    static async patchResource(id, resource) {
+    static async patchResource(resourceId, resource) {
         try {
-            let res = await this.request(`resources/${id}`, resource, 'patch');
+            let res = await this.request(`resources/${resourceId}`, resource, 'patch');
             return res.resource;
         } catch (err) {
             console.error("error submitting resource", err);
@@ -124,9 +124,9 @@ class TransconnectApi {
 
     /** Make a post */
 
-    static async createPost(post, user) {
+    static async createPost(post) {
         try {
-            let res = await this.request('posts', { post, user }, 'post');
+            let res = await this.request('posts', post, 'post');
             return res.post;
         } catch (err) {
             console.error("error creating post", err);
@@ -242,6 +242,34 @@ class TransconnectApi {
             return res.user;
         } catch (err) {
             console.error("error editing user information", err);
+        }
+    }
+
+    //BATHROOMS routes
+
+    /** Get list of 50 bathrooms */
+
+    static async getBathrooms(location = '', accessibility = false) {
+        try {
+            const queryParams = {
+                location: location,
+                accessibility: accessibility
+            };
+
+            // Remove any empty query parameters
+            for (const key in queryParams) {
+                if (queryParams[key] === '') {
+                    delete queryParams[key];
+                }
+                if (queryParams[key] === false) {
+                    delete queryParams[key];
+                }
+            }
+
+            let res = await this.request('bathrooms', queryParams);
+            return res.bathrooms;
+        } catch (err) {
+            console.error("error getting bathrooms", err);
         }
     }
 
