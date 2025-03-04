@@ -1,29 +1,32 @@
 import React, { useContext, useEffect, useState } from "react";
 import UserContext from "../UserContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import TransconnectApi from "../api";
 import ResourceCard from "./ResourceCard";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
 /** ResourceList: displays cards for every existing resource
  * 
  * auth required: none
  * 
  * unapproved resources and certain functionalities are only visible/accessible to admins
-  */
+ */
 
 const ResourceList = () => {
     const [resources, setResources] = useState([]);
     const [types, setTypes] = useState([]);
-    const [searchType, setSearchType] = useState('');
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchType, setSearchType] = useState("");
+    const [searchTerm, setSearchTerm] = useState("");
     const { currUser } = useContext(UserContext);
 
     useEffect(() => {
         const fetchResources = async () => {
             try {
                 let data = await TransconnectApi.getResources();
-                if (currUser.role === 'USER') {
-                    data = data.filter(r => r.approved); // Only approved resources for non-admin users
+                if (currUser.role === "USER") {
+                    data = data.filter((r) => r.approved); // Only approved resources for non-admin users
                 }
                 setResources(data);
             } catch (err) {
@@ -33,12 +36,12 @@ const ResourceList = () => {
         const fetchTypes = async () => {
             try {
                 const data = await TransconnectApi.getTypes();
-                let typeList = data.map(t => (t.name));
+                let typeList = data.map((t) => t.name);
                 setTypes(typeList);
             } catch (err) {
                 console.error("Error fetching types", err);
             }
-        }
+        };
 
         fetchResources();
         fetchTypes();
@@ -54,7 +57,7 @@ const ResourceList = () => {
         } catch (err) {
             console.error("Error fetching resources", err);
         }
-    }
+    };
 
     // Handle search bar input change
     const handleChange = (e) => {
@@ -75,57 +78,64 @@ const ResourceList = () => {
 
     return (
         <div>
+            {/* Search Bar */}
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1, p: 2 }}>
+                <TextField
+                    fullWidth
+                    label="Enter search term..."
+                    variant="outlined"
+                    value={searchTerm}
+                    onChange={handleChange}
+                    sx={{ maxWidth: 600 }}
+                />
+                <Button type="submit" variant="contained">
+                    Search
+                </Button>
+            </Box>
+
+
+            {/* Filter Buttons */}
             <div>
-                <form onSubmit={handleSubmit}>
-                    <div className="row justify-content-center gx-0">
-                        <div className="col-8">
-                            <input
-                                onChange={handleChange}
-                                className="form-control form-control-lg"
-                                name="searchTerm"
-                                placeholder="Enter search term.."
+                <Button value="" onClick={handleClick} variant="outlined">
+                    X
+                </Button>
+                {types.map((t) => (
+                    <Button key={t} name={t} value={t} onClick={handleClick} variant="outlined" sx={{ m: 0.5 }}>
+                        {t}
+                    </Button>
+                ))}
+            </div>
+
+            {/* Resource Cards */}
+            <div>
+                {resources.length ? (
+                    <div>
+                        {resources.map((r) => (
+                            <ResourceCard
+                                key={r.id}
+                                id={r.id}
+                                name={r.name}
+                                description={r.description}
+                                url={r.url}
+                                types={r.types}
+                                userId={r.userId}
+                                approved={r.approved}
                             />
-                        </div>
-                        <div className="col-auto">
-                            <button
-                                type="submit"
-                                className="btn btn-lg btn-primary">
-                                Search
-                            </button>
-                        </div>
+                        ))}
                     </div>
-                </form>
+                ) : (
+                    <p className="lead white-letters">Sorry, no results were found!</p>
+                )}
             </div>
-            <div>
-                <button value='' onClick={handleClick}>X</button>
-                {types.map(t => (<button key={t} name={t} value={t} onClick={handleClick}>{t}</button>))}
-            </div>
-            <div>
-                {resources.length
-                    ? (
-                        <div>
-                            {resources.map(r => (
-                                <ResourceCard
-                                    key={r.id}
-                                    id={r.id}
-                                    name={r.name}
-                                    description={r.description}
-                                    url={r.url}
-                                    types={r.types}
-                                    userId={r.userId}
-                                    approved={r.approved}
-                                />
-                            ))}
-                        </div>
-                    ) : (
-                        <p className="lead white-letters">Sorry, no results were found!</p>
-                    )}
-            </div>
-            <div>
-                <button className="btn btn-lg btn-primary"><Link to="/resources/new">Submit a resource</Link></button>
-            </div>
+
+            {/* Submit a Resource Button */}
+            <Box sx={{ textAlign: "center", mt: 2 }}>
+                <Button variant="contained" component={Link} to="/resources/new">
+                    Submit a resource
+                </Button>
+            </Box>
         </div>
     );
-}
+};
 
 export default ResourceList;

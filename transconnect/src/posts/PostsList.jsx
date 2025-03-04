@@ -1,26 +1,27 @@
 import React, { useContext, useEffect, useState } from "react";
 import UserContext from "../UserContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import TransconnectApi from "../api";
 import PostCard from "./PostCard";
+import { TextField, Button, Box } from "@mui/material";
 
 /** PostsList: list of posts (in card form) made by users 
  * 
  * auth required: logged in
-*/
+ */
 
 const PostsList = () => {
     const [posts, setPosts] = useState([]);
     const [tags, setTags] = useState([]);
-    const [searchTag, setSearchTag] = useState('');
+    const [searchTag, setSearchTag] = useState("");
     const { currUser } = useContext(UserContext);
-    console.debug("Posts", "currUser=", currUser);
-    const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         if (!currUser) {
-            navigate("/");
+            return;
         }
+
         const fetchPosts = async () => {
             try {
                 const data = await TransconnectApi.getPosts();
@@ -29,64 +30,109 @@ const PostsList = () => {
                 console.error("Error fetching posts", err);
             }
         };
+
         const fetchTags = async () => {
             try {
                 const data = await TransconnectApi.getTags();
-                let tagList = data.map(t => (t.name));
-                setTags(tagList);
+                setTags(data.map(t => t.name));
             } catch (err) {
                 console.error("Error fetching tags", err);
             }
-        }
+        };
 
         fetchPosts();
         fetchTags();
-    }, [currUser, navigate]);
+    }, [currUser]);
 
-    const handleClick = async (e) => {
+    const handleTagClick = async (e) => {
         e.preventDefault();
-        setSearchTag(e.target.value);
-        // filter posts by tag(s)
+        const tag = e.target.value;
+
+        // If "X" (clear filter) is clicked, reset search term
+        setSearchTag(tag ? tag : "");
+
         try {
-            const data = await TransconnectApi.getPosts(searchTag); // only works if posts can have 1 tag only
+            const data = await TransconnectApi.getPosts(searchTag ? [searchTag] : []);
             setPosts(data);
         } catch (err) {
             console.error("Error fetching posts", err);
         }
-    }
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const handleSearchSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const data = await TransconnectApi.getPosts(searchTerm);
+            setPosts(data);
+        } catch (err) {
+            console.error("Error fetching posts", err);
+        }
+    };
 
     return (
         <div>
+            {/* Search Bar */}
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1, p: 2 }}>
+                <TextField
+                    fullWidth
+                    label="Search posts..."
+                    variant="outlined"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    sx={{ maxWidth: 600 }}
+                />
+                <Button type="submit" variant="contained" onClick={handleSearchSubmit}>
+                    Search
+                </Button>
+            </Box>
+
+            {/* Filter Buttons */}
             <div>
-                <button value='' onClick={handleClick}>X</button>
-                {tags.map(t => (<button name={t} value={t} onClick={handleClick}>{t}</button>))}
+                <Button value="" onClick={handleTagClick} variant="outlined">
+                    X
+                </Button>
+                {tags.map((t) => (
+                    <Button key={t} value={t} onClick={handleTagClick} variant="outlined" sx={{ m: 0.5 }}>
+                        {t}
+                    </Button>
+                ))}
             </div>
+
+            {/* Post Cards */}
             <div>
-                {posts.length
-                    ? (
-                        <div>
-                            {posts.map(p => (
-                                <PostCard
-                                    key={p.id}
-                                    id={p.id}
-                                    title={p.title}
-                                    createdAt={p.createdAt}
-                                    editedAt={p.editedAt}
-                                    content={p.content}
-                                    user={p.user}
-                                    comments={p.comments}
-                                />
-                            ))}
-                        </div>
-                    ) : (
-                        <p className="lead white-letters">Sorry, no results were found!</p>
-                    )}
+                {posts ? (
+                    <div>
+                        {posts.map((p) => (
+                            <PostCard
+                                key={p.id}
+                                id={p.id}
+                                title={p.title}
+                                createdAt={p.createdAt}
+                                editedAt={p.editedAt}
+                                content={p.content}
+                                user={p.user}
+                                comments={p.comments}
+                                tags={p.tags}
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <p className="lead white-letters">Sorry, no results were found!</p>
+                )}
             </div>
-            <div>
-                <button className="btn btn-lg btn-primary"><Link to="/posts/new">Say something</Link></button>
-            </div>
+
+            {/* Create New Post Button */}
+            <Box sx={{ textAlign: "center", mt: 2 }}>
+                <Button variant="contained" component={Link} to="/posts/new">
+                    Say Something
+                </Button>
+            </Box>
         </div>
     );
-}
+};
 
 export default PostsList;

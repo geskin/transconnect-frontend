@@ -3,6 +3,7 @@ import UserContext from "../UserContext";
 import { useNavigate, useParams } from "react-router-dom";
 import TransconnectApi from "../api";
 import { formatDate } from "../utils/formatDate";
+import CommentsBottomNavigation from "../utils/bottomNav";
 
 /** PostDetail: shows details on a particular post including all associated comments 
  * 
@@ -34,19 +35,24 @@ const PostDetail = () => {
         fetchPost();
     }, [currUser, id]);
 
+
+    // <div>
+    //     {comments ?
+    //         <ul>
+    //             {comments.map(c => (<li>{c.content}</li>))}
+    //         </ul>
+    //         :
+    //         <p>No comments yet!</p>
+    //     }
+    // </div>
+
     return (
         <div className="col-md-8 offset-md-2">
             <h3 className="mb-3 white-letters">{post.title}</h3>
             <p className="white-letters">{post.content}</p>
             <i>Posted on: {formatDate(post.createdAt)}</i>
             <div>
-                {comments ?
-                    <ul>
-                        {comments.map(c => (<li>{c.content}</li>))}
-                    </ul>
-                    :
-                    <p>No comments yet!</p>
-                }
+                <CommentsBottomNavigation postId={post.id} comments={comments} />
             </div>
         </div>
     );

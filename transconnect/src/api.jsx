@@ -101,15 +101,20 @@ class TransconnectApi {
      * optionally filter by tag
      */
 
-    static async getPosts(tags = []) { // tag = [] given an array of tags 
+    static async getPosts(tags = [], searchTerm = "") {
         try {
-            const queryParams = tags ? { tags: tags } : {};
+            const queryParams = {};
+
+            if (tags.length > 0) queryParams.tags = tags;
+            if (searchTerm) queryParams.search = searchTerm;
+
             let res = await this.request('posts', queryParams);
             return res.posts;
         } catch (err) {
-            console.error("error fetching posts", err);
+            console.error("Error fetching posts", err);
         }
     }
+
 
     /** Get a single post by id */
 
@@ -242,6 +247,16 @@ class TransconnectApi {
             return res.user;
         } catch (err) {
             console.error("error editing user information", err);
+        }
+    }
+
+    static async deleteUser(username, user) {
+        try {
+            let res = await this.request(`users/${username}`, user, "delete");
+            console.debug(`deleted: ${res.deleted}`);
+            return res.deleted;
+        } catch (err) {
+            console.error("error deleting user", err);
         }
     }
 

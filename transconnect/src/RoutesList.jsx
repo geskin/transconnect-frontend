@@ -24,7 +24,7 @@ const RoutesList = ({ signup, login, logout, editUser, createPost, submitResourc
             <Route path="/" element={<Homepage />} />
             <Route path="/login" element={<LoginForm login={login} />} />
             <Route path="/register" element={<SignupForm signup={signup} />} />
-            <Route path="/users/:username" element={<Profile />} />
+            <Route path="/users/:username" element={<Profile logout={logout} />} />
             <Route path="/users/:username/edit" element={<EditUserForm editUser={editUser} />} />
             <Route path="/posts" element={<PostsList />} />
             <Route path="/posts/:id" element={<PostDetail />} />

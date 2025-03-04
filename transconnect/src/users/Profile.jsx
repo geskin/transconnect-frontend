@@ -1,32 +1,30 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import { Card, CardContent, Typography, Button, Box } from "@mui/material";
 import UserContext from "../UserContext";
-import { Link, useNavigate, useParams } from "react-router-dom";
 import TransconnectApi from "../api";
 import { formatDate } from "../utils/formatDate";
-import "../css/Profile.css";
 
-/** Profile: displays non-sensitive user information (unless username same as currUser.username or user is admin) 
- * 
- * auth required: logged in
- * 
- * can get to profile page by typing users/[username] or clicking on the username listed on a post or comment
- * 
- * routes -> profile
-*/
-
-const Profile = () => {
+const Profile = ({ logout }) => {
     const { username } = useParams();
     const { currUser } = useContext(UserContext);
-    const [user, setUser] = useState(null)
+    const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
-    if (!currUser) return <p>Loading...</p>;
+    const deleteProfile = async () => {
+        if (window.confirm("Are you sure you want to delete your profile? This action cannot be undone.")) {
+            try {
+                await TransconnectApi.deleteUser(username, user);
+                logout();
+                navigate("/");
+            } catch (err) {
+                console.error("Error deleting user:", err);
+            }
+        }
+    };
 
     useEffect(() => {
-        console.debug("running Profile useEffect", "currUser=", currUser);
-
-        if (!currUser) navigate('/');
-
+        if (!currUser) navigate("/");
         if (username !== currUser.username) {
             const fetchUser = async () => {
                 try {
@@ -38,31 +36,62 @@ const Profile = () => {
             };
             fetchUser();
         }
-    }, [username, currUser]);
+    }, [username, currUser, navigate]);
+
+    if (!currUser) return <Typography>Loading...</Typography>;
+
+    const displayedUser = username === currUser.username ? currUser : user;
 
     return (
-        <div>
-            {
-                (username === currUser.username) ?
-                    <div>
-                        <h2 className="mb-4 fw-bold">{username}</h2>
-                        <p>{currUser.pronouns}</p>
-                        <p>{currUser.bio}</p>
-                        <p>{currUser.email}</p>
-                        <i>Created on: {formatDate(currUser.createdAt)}</i>
-                        <button>
-                            <Link to={`/users/${username}/edit`} className="btn btn-primary fw-bold me-3">Edit Profile</Link>
-                        </button>
-                    </div>
-                    :
-                    <div>
-                        <h2 className="mb-4 fw-bold">{user.username}</h2>
-                        <p>{user.bio}</p>
-                        <i>Created on: {formatDate(user.createdAt)}</i>
-                    </div>
-            }
-        </div>
+        <Box display="flex" justifyContent="center" mt={4}>
+            <Card sx={{ width: 500, p: 3, boxShadow: 3, borderRadius: 2 }}>
+                <CardContent>
+                    <Typography variant="h4" fontWeight="bold" gutterBottom>
+                        {displayedUser?.username}
+                    </Typography>
+                    {displayedUser?.pronouns && (
+                        <Typography variant="subtitle1" color="text.secondary">
+                            {displayedUser.pronouns}
+                        </Typography>
+                    )}
+                    {displayedUser?.bio && (
+                        <Typography variant="body1" mt={1}>
+                            {displayedUser.bio}
+                        </Typography>
+                    )}
+                    {displayedUser?.email && (username === currUser.username || currUser.role === 'ADMIN') && (
+                        <Typography variant="body2" color="text.secondary" mt={1}>
+                            {displayedUser.email}
+                        </Typography>
+                    )}
+                    <Typography variant="caption" display="block" mt={2}>
+                        Created on: {formatDate(displayedUser?.createdAt)}
+                    </Typography>
+                    {(username === currUser.username || currUser.role === 'ADMIN') && (
+                        <div>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                sx={{ mt: 2 }}
+                                component={Link}
+                                to={`/users/${username}/edit`}
+                            >
+                                Edit Profile
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="error"
+                                sx={{ mt: 2, ml: 2 }}
+                                onClick={deleteProfile}
+                            >
+                                Delete Profile
+                            </Button>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+        </Box>
     );
-}
+};
 
 export default Profile;

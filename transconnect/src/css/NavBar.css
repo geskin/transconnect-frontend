@@ -1,3 +1,7 @@
+.navbar {
+    background-color: whitesmoke;
+}
+
 nav {
     display: flex;
     flex-direction: row;
@@ -11,22 +15,27 @@ nav {
     margin-bottom: 1rem;
 }
 
-.nav {
+/* .nav {
     display: flex;
     flex-direction: row;
     gap: 15px;
     align-items: center;
-}
+} */
 
-.navbar-nav {
+/* .navbar-nav {
     display: flex;
     flex-direction: row;
-}
+} */
 
 .navbar-brand {
+    color: -webkit-linear-gradient(lightpink, lightblue);
+    font-family: 'monospace';
+    letter-spacing: '.2rem';
+    text-decoration: 'none';
     font-size: 1.5rem;
     font-weight: bold;
-    color: -webkit-linear-gradient(lightpink, lightblue);
+    padding-left: 20px;
+    padding-right: 20px;
     /* text-shadow: 2px 2px 5px rgb(52, 48, 47); */
     background: -webkit-linear-gradient(lightpink, lightblue);
     -webkit-background-clip: text;
@@ -34,19 +43,19 @@ nav {
 }
 
 .nav-item {
-    width: auto;
+    /* width: auto;
     text-align: center;
     display: flex;
-    align-items: center;
+    align-items: center; */
     color: lightblue;
 }
 
-nav a {
+.nav-item a {
     color: lightblue;
     text-decoration: none;
 }
 
-nav a.active {
+.nav-item a.active {
     color: lightpink;
     font-weight: bold;
     border-bottom: 5px dotted;
