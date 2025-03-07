@@ -7,6 +7,7 @@ import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import { formatDate } from "../utils/formatDate";
+import TransconnectApi from "../api";
 
 /** PostCard: Individual card for a post. Displayed in PostList. */
 
@@ -15,7 +16,13 @@ const PostCard = ({ title, id, createdAt, editedAt, content, user, comments, tag
     const navigate = useNavigate();
 
     const deletePost = async () => {
-
+        try {
+            let post = await TransconnectApi.getPost(id);
+            await TransconnectApi.deletePost(id, post);
+            navigate("/posts");
+        } catch (err) {
+            console.error("Error deleting resource:", err);
+        }
     }
 
     return (

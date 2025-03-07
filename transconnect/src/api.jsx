@@ -95,6 +95,16 @@ class TransconnectApi {
         }
     }
 
+    static async deleteResource(id, resource) {
+        try {
+            let res = await this.request(`resources/${id}`, resource, 'delete');
+            console.debug(`deleted: ${res.deleted}`);
+            return res.deleted;
+        } catch (err) {
+            console.error("error deleting resource", err);
+        }
+    }
+
     //POSTS routes
 
     /** Get all posts
@@ -146,6 +156,16 @@ class TransconnectApi {
             return res.post;
         } catch (err) {
             console.error("error editing post", err);
+        }
+    }
+
+    static async deletePost(id, post) {
+        try {
+            let res = await this.request(`posts/${id}`, post, 'delete');
+            console.debug(`deleted: ${res.deleted}`);
+            return res.deleted;
+        } catch (err) {
+            console.error("error deleting resource", err);
         }
     }
 

@@ -18,13 +18,23 @@ const ResourceCard = ({ id, name, description, url, types, userId, approved }) =
     const toggleApproval = async (e) => {
         e.preventDefault();
         try {
-            const newApprovalState = !approval; // Toggle state
+            const newApprovalState = !approval;
             await TransconnectApi.approve(newApprovalState, id);
-            setApproval(newApprovalState); // Update state
+            setApproval(newApprovalState);
         } catch (err) {
             console.error("Error toggling approval", err);
         }
     };
+
+    const deleteResource = async () => {
+        try {
+            let resource = await TransconnectApi.getResource(id);
+            await TransconnectApi.deleteResource(id, resource);
+            navigate("/resources");
+        } catch (err) {
+            console.error("Error deleting resource:", err);
+        }
+    }
 
     return (
         <Card className="Card card">
@@ -50,6 +60,14 @@ const ResourceCard = ({ id, name, description, url, types, userId, approved }) =
                         >
                             {approval ? "Approved" : "Approve"}
                         </button>
+                        <Button
+                            variant="contained"
+                            color="error"
+                            sx={{ mt: 2, ml: 2 }}
+                            onClick={deleteResource}
+                        >
+                            Delete
+                        </Button>
                         <Button onClick={() => navigate(`/resources/${id}/edit`)} size="small">Edit</Button>
                         <Button onClick={() => navigate(`/resources/${id}`)} size="small">Details</Button>
                     </div>
