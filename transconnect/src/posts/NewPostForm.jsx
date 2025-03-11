@@ -2,12 +2,22 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TransconnectApi from "../api";
 import UserContext from "../UserContext";
+import {
+    TextField,
+    Button,
+    Card,
+    CardContent,
+    Typography,
+    FormGroup,
+    FormControlLabel,
+    Checkbox,
+    Box
+} from "@mui/material";
 
-/** NewPostForm: form for submitting new post
+/** NewPostForm: form for submitting a new post 
  * 
- * auth required: logged in
+ * Auth required: logged in
  */
-
 const NewPostForm = ({ createPost }) => {
     const [formData, setFormData] = useState({
         title: "",
@@ -25,108 +35,100 @@ const NewPostForm = ({ createPost }) => {
         const fetchTags = async () => {
             try {
                 const data = await TransconnectApi.getTags();
-                console.debug(data);
-                let tagList = data.map(t => (t.name));
+                let tagList = data.map(t => t.name);
                 setTags(tagList);
             } catch (err) {
                 console.error("Error fetching tags", err);
             }
-        }
+        };
         fetchTags();
-    }, [currUser]);
+    }, [currUser, navigate]);
 
-    const handleChange = e => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(formData => ({
+        setFormData((formData) => ({
             ...formData,
             [name]: value
         }));
     };
 
-    const handleCheckbox = e => {
-        if (formData.tags.includes(e.target.value)) {
-            //remove e.target.value from array
-            const filteredTags = formData.tags.filter(t => (t !== e.target.value));
-            setFormData(formData => ({
-                ...formData,
-                tags: filteredTags
-            }));
-        } else {
-            setFormData(formData => ({
-                ...formData,
-                tags: [...formData.tags, e.target.value]
-            }));
-        }
-    }
+    const handleCheckbox = (e) => {
+        const { value } = e.target;
+        setFormData((formData) => ({
+            ...formData,
+            tags: formData.tags.includes(value)
+                ? formData.tags.filter((t) => t !== value)
+                : [...formData.tags, value]
+        }));
+    };
 
-    const gatherInput = e => {
+    const gatherInput = (e) => {
         e.preventDefault();
         createPost({ ...formData, userId: currUser.id });
-        setFormData({
-            title: "",
-            content: "",
-            tags: []
-        });
+        setFormData({ title: "", content: "", tags: [] });
         navigate("/posts");
     };
 
     return (
-        <div className="Form">
-            <div className="container col-md-6 offset-md-3 col-lg-4 offset-lg-4">
-                <h2 className="mb-3">New Post</h2>
-                <div className="card">
-                    <div className="card-body">
-                        <form onSubmit={gatherInput}>
-                            <div className="mb-3">
-                                <label className="form-label" htmlFor="title"><b>Title</b></label>
-                                <input
-                                    onChange={handleChange}
-                                    type="text"
-                                    name="title"
-                                    value={formData.title}
-                                    id="title"
-                                    className="form-control"
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label" htmlFor="content"><b>Content</b></label>
-                                <input
-                                    onChange={handleChange}
-                                    type="text"
-                                    name="content"
-                                    value={formData.content}
-                                    id="content"
-                                    className="form-control"
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label"><b>Tags:</b></label>
-                                {tags.map((t) => (
-                                    <div key={t} className="form-check">
-                                        <input
-                                            onChange={handleCheckbox}
-                                            type="checkbox"
-                                            name={t}
-                                            value={t}
-                                            id={t}
+        <Box display="flex" justifyContent="center" mt={5}>
+            <Card sx={{ width: 500, padding: 3 }}>
+                <CardContent>
+                    <Typography variant="h5" gutterBottom>
+                        New Post
+                    </Typography>
+                    <form onSubmit={gatherInput}>
+                        <TextField
+                            fullWidth
+                            margin="normal"
+                            label="Title"
+                            name="title"
+                            value={formData.title}
+                            onChange={handleChange}
+                            required
+                        />
+                        <TextField
+                            fullWidth
+                            margin="normal"
+                            label="Content"
+                            name="content"
+                            multiline
+                            rows={4}
+                            value={formData.content}
+                            onChange={handleChange}
+                            required
+                        />
+                        <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
+                            Tags:
+                        </Typography>
+                        <FormGroup>
+                            {tags.map((t) => (
+                                <FormControlLabel
+                                    key={t}
+                                    control={
+                                        <Checkbox
                                             checked={formData.tags.includes(t)}
-                                            className="form-check-input"
+                                            onChange={handleCheckbox}
+                                            value={t}
                                         />
-                                        <label className="form-check-label" htmlFor={t}>{t}</label>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="d-grid">
-                                <button type="submit" className="btn btn-primary">
-                                    Post!
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+                                    }
+                                    label={t}
+                                />
+                            ))}
+                        </FormGroup>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            sx={{ mt: 2 }}
+                        >
+                            Post!
+                        </Button>
+                    </form>
+                </CardContent>
+            </Card>
+        </Box>
     );
-}
+};
 
 export default NewPostForm;

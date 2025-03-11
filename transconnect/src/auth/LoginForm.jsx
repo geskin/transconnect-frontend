@@ -1,73 +1,76 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-/** LoginForm: displays login form and handles submission */
+import { Card, CardContent, Typography, TextField, Button, Box } from "@mui/material";
 
 const LoginForm = ({ login }) => {
     const [formData, setFormData] = useState({
         username: "",
         password: ""
     });
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    const handleChange = evt => {
+    const handleChange = (evt) => {
         const { name, value } = evt.target;
-        setFormData(formData => ({
+        setFormData((formData) => ({
             ...formData,
             [name]: value
         }));
     };
 
-    const gatherInput = (evt) => {
+    const gatherInput = async (evt) => {
         evt.preventDefault();
-        login(formData.username, formData.password);
-        setFormData({
-            username: "",
-            password: ""
-        });
-        navigate("/");
+        setError("");
+        try {
+            const success = await login(formData.username, formData.password);
+            console.debug("success", success);
+            if (success) {
+                navigate("/");
+            } else {
+                setError("Invalid username or password");
+            }
+        } catch (err) {
+            console.error("Error authenticating user", err);
+        }
     };
 
     return (
-        <div className="Form">
-            <div className="container col-md-6 offset-md-3 col-lg-4 offset-lg-4">
-                <h2 className="mb-3">Log In</h2>
-                <div className="card">
-                    <div className="card-body">
-                        <form onSubmit={gatherInput}>
-                            <div className="mb-3">
-                                <label className="form-label" htmlFor="username"><b>Username</b></label>
-                                <input
-                                    onChange={handleChange}
-                                    type="text"
-                                    name="username"
-                                    value={formData.username}
-                                    id="username"
-                                    className="form-control"
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label" htmlFor="password"><b>Password</b></label>
-                                <input
-                                    onChange={handleChange}
-                                    type="password"
-                                    name="password"
-                                    value={formData.password}
-                                    id="password"
-                                    className="form-control"
-                                />
-                            </div>
-                            <div className="d-grid">
-                                <button className="btn btn-primary">
-                                    Log In
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Box display="flex" justifyContent="center" mt={4}>
+            <Card sx={{ width: 400, p: 3, boxShadow: 3, borderRadius: 2 }}>
+                <CardContent>
+                    <Typography variant="h4" fontWeight="bold" gutterBottom>
+                        Log In
+                    </Typography>
+                    <form onSubmit={gatherInput}>
+                        <TextField
+                            fullWidth
+                            label="Username"
+                            name="username"
+                            value={formData.username}
+                            onChange={handleChange}
+                            sx={{ mb: 2 }}
+                        />
+                        <TextField
+                            fullWidth
+                            label="Password"
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            error={!!error}
+                            helperText={error ? "Invalid username or password" : ""}
+                            sx={{ mb: 2 }}
+                        />
+                        <Box mt={2}>
+                            <Button type="submit" variant="contained" color="primary" fullWidth>
+                                Log In
+                            </Button>
+                        </Box>
+                    </form>
+                </CardContent>
+            </Card>
+        </Box>
     );
-}
+};
 
 export default LoginForm;

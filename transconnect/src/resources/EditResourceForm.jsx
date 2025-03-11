@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Card, CardContent, Typography, TextField, Button, Box, FormControlLabel, Checkbox } from "@mui/material";
 import UserContext from "../UserContext";
 import TransconnectApi from "../api";
 
@@ -7,11 +8,8 @@ import TransconnectApi from "../api";
  * 
  * auth required: admin
  */
-
 const EditResourceForm = ({ updateResource }) => {
-    const params = useParams();
-    const id = params.id;
-    console.debug("id:", id);
+    const { id } = useParams();
     const { currUser } = useContext(UserContext);
     const navigate = useNavigate();
     const [types, setTypes] = useState([]);
@@ -22,153 +20,138 @@ const EditResourceForm = ({ updateResource }) => {
         types: []
     });
 
+    if (!currUser) return <Typography>Loading...</Typography>;
+
     useEffect(() => {
-        if (currUser.role !== 'ADMIN' || !currUser) navigate('/resources');
+        if (!currUser || currUser.role !== "ADMIN") {
+            navigate("/resources");
+            return;
+        }
 
         const fetchResource = async () => {
             try {
                 const resource = await TransconnectApi.getResource(id);
-                console.debug(resource); //resource.types doesn't exist?
                 setFormData({
-                    name: resource.name,
-                    description: resource.description,
-                    url: resource.url,
-                    types: resource.types
+                    name: resource.name || "",
+                    description: resource.description || "",
+                    url: resource.url || "",
+                    types: resource.types || []
                 });
             } catch (err) {
                 console.error("Error fetching resource", err);
             }
-        }
+        };
+
         const fetchTypes = async () => {
             try {
                 const data = await TransconnectApi.getTypes();
-                let typeList = data.map(t => (t.name));
-                setTypes(typeList);
+                setTypes(data.map(t => t.name));
             } catch (err) {
                 console.error("Error fetching resource types", err);
             }
-        }
+        };
+
         fetchResource();
         fetchTypes();
-    }, [id]);
+    }, [id, currUser, navigate]);
 
     const handleChange = evt => {
         const { name, value } = evt.target;
-        setFormData(formData => ({
-            ...formData,
+        setFormData(fData => ({
+            ...fData,
             [name]: value
         }));
     };
 
-    const handleCheckbox = e => {
-        if (formData.types.includes(e.target.value)) {
-            //remove e.target.value from array
-            const filteredTypes = formData.types.filter(t => (t !== e.target.value)); //include everything in the types array except for e.target.value
-            setFormData(formData => ({
-                ...formData,
-                types: filteredTypes
-            }));
-        } else {
-            setFormData(formData => ({
-                ...formData,
-                types: [...formData.types, e.target.value]
-            }));
-        }
-    }
+    const handleCheckbox = evt => {
+        const value = evt.target.value;
+        setFormData(fData => ({
+            ...fData,
+            types: fData.types.includes(value)
+                ? fData.types.filter(t => t !== value)
+                : [...fData.types, value]
+        }));
+    };
 
-    const gatherInput = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (evt) => {
+        evt.preventDefault();
         try {
-            console.debug(formData);
             await updateResource(id, formData);
-            // formData.name,
-            // formData.description,
-            // formData.url,
-            // formData.types);
-
-            // Update the current user data in the form
-            setFormData({
-                name: formData.name,
-                description: formData.description,
-                url: formData.url,
-                types: formData.types
-            });
-
-            navigate(`/resources/${id}`); //not working -- unable to go back to resource detail
+            navigate(`/resources/${id}`);
         } catch (err) {
             console.error("Error updating resource:", err);
         }
     };
 
     return (
-        <div className="Form">
-            <div className="container col-md-6 offset-md-3 col-lg-4 offset-lg-4">
-                <h2 className="mb-3">Edit Resource</h2>
-                <div className="card">
-                    <div className="card-body">
-                        <form onSubmit={gatherInput}>
-                            <div className="mb-3">
-                                <label className="form-label" htmlFor="name"><b>Resource Name</b></label>
-                                <input
-                                    onChange={handleChange}
-                                    type="text"
-                                    name="name"
-                                    value={formData.name}
-                                    id="name"
-                                    className="form-control"
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label" htmlFor="description"><b>Description</b></label>
-                                <input
-                                    onChange={handleChange}
-                                    type="text"
-                                    name="description"
-                                    value={formData.description}
-                                    id="description"
-                                    className="form-control"
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label" htmlFor="url"><b>{`URL (if applicable)`}</b></label>
-                                <input
-                                    onChange={handleChange}
-                                    type="text"
-                                    name="url"
-                                    value={formData.url}
-                                    id="url"
-                                    className="form-control"
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label"><b>Resource type:</b></label>
-                                {types.map((t) => (
-                                    <div key={t} className="form-check">
-                                        <input
-                                            onChange={handleCheckbox}
-                                            type="checkbox"
-                                            name={t}
-                                            value={t}
-                                            id={t}
-                                            checked={formData.types.includes(t)}
-                                            className="form-check-input"
-                                        />
-                                        <label className="form-check-label" htmlFor={t}>{t}</label>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="d-grid">
-                                <button type="submit" className="btn btn-primary">
-                                    Update resource
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Box display="flex" justifyContent="center" mt={4}>
+            <Card sx={{ width: 400, p: 3, boxShadow: 3, borderRadius: 2 }}>
+                <CardContent>
+                    <Typography variant="h4" fontWeight="bold" gutterBottom>
+                        Edit Resource
+                    </Typography>
+                    <form onSubmit={handleSubmit}>
+                        <TextField
+                            fullWidth
+                            label="Resource Name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            sx={{ mb: 2 }}
+                        />
+                        <TextField
+                            fullWidth
+                            label="Description"
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            multiline
+                            rows={3}
+                            sx={{ mb: 2 }}
+                        />
+                        <TextField
+                            fullWidth
+                            label="URL (if applicable)"
+                            name="url"
+                            value={formData.url}
+                            onChange={handleChange}
+                            sx={{ mb: 2 }}
+                        />
+                        <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
+                            Resource Type:
+                        </Typography>
+                        {types.map(t => (
+                            <FormControlLabel
+                                key={t}
+                                control={
+                                    <Checkbox
+                                        checked={formData.types.includes(t)}
+                                        onChange={handleCheckbox}
+                                        value={t}
+                                    />
+                                }
+                                label={t}
+                            />
+                        ))}
+                        <Box mt={2}>
+                            <Button type="submit" variant="contained" color="primary" fullWidth>
+                                Update Resource
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                fullWidth
+                                sx={{ mt: 2 }}
+                                onClick={() => navigate("/resources")}
+                            >
+                                Cancel
+                            </Button>
+                        </Box>
+                    </form>
+                </CardContent>
+            </Card>
+        </Box>
     );
-
-}
+};
 
 export default EditResourceForm;

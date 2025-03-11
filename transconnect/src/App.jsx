@@ -30,8 +30,6 @@ function App() {
 
     // Set the current user with username and role
     setCurrUser({ username, role });
-
-    console.debug(currUser);
   }, [token]);
 
   // Fetch additional user details on current user only after currUser is set
@@ -57,7 +55,13 @@ function App() {
   const login = async (username, password) => {
     try {
       const data = await TransconnectApi.authenticate(username, password);
-      setToken(data);
+      if (data) {
+        setToken(data);
+        return true;
+      } else {
+        setToken(data);
+        return false;
+      }
     } catch (err) {
       console.error("Error authenticating user", err);
     }
@@ -114,9 +118,9 @@ function App() {
     }
   }
 
-  const editPost = async (postId, post) => {
+  const editPost = async (postId, post, userId) => {
     try {
-      const data = await TransconnectApi.editPost(postId, post);
+      const data = await TransconnectApi.editPost(postId, post, userId);
       console.debug(data);
     } catch (err) {
       console.error("Error updating post", err);
@@ -125,7 +129,7 @@ function App() {
 
   const addComment = async (postId, comment) => {
     try {
-      const data = await TransconnectApi.createComment(postId, comment);
+      const data = await TransconnectApi.createComment(postId, comment, currUser);
     } catch (err) {
       console.error("Error saving comment", err);
     }

@@ -32,8 +32,14 @@ const EditUserForm = ({ editUser }) => {
     const gatherInput = async (e) => {
         e.preventDefault();
         try {
-            await editUser(formData);
-            navigate(`/users/${currUser.username}`);
+            if (!formData.password) {
+                window.alert("You must enter your password to save changes.");
+                return;
+            } else {
+                console.debug(formData);
+                await editUser(formData);
+                navigate(`/users/${currUser.username}`);
+            }
         } catch (err) {
             console.error("Error updating user:", err);
         }

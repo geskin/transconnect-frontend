@@ -43,15 +43,19 @@ class TransconnectApi {
      * optionally filter by type
      */
 
-    static async getResources(types = []) {
+    static async getResources(searchTerm = "", type = "") {
         try {
-            const queryParams = types ? { types: types } : {};
-            let res = await this.request('resources', queryParams);
+            const queryParams = {};
+            if (searchTerm) queryParams.searchTerm = searchTerm;
+            if (type) queryParams.type = type;
+
+            let res = await this.request("resources", queryParams);
             return res.resources;
         } catch (err) {
-            console.error("error fetching resources", err);
+            console.error("Error fetching resources", err);
         }
     }
+
 
     /** Get a single resource by id */
 
@@ -88,7 +92,7 @@ class TransconnectApi {
 
     static async approve(approved, id) {
         try {
-            let res = await this.request(`resources/${id}`, approved, 'patch');
+            let res = await this.request(`resources/${id}`, { approved }, 'patch');
             return res.resource;
         } catch (err) {
             console.error("error changing approval status", err);
@@ -115,7 +119,7 @@ class TransconnectApi {
         try {
             const queryParams = {};
 
-            if (tags.length > 0) queryParams.tags = tags;
+            if (tags.length > 0) queryParams.tag = tags[0]; //pass only first tag since expects a string
             if (searchTerm) queryParams.search = searchTerm;
 
             let res = await this.request('posts', queryParams);
@@ -125,6 +129,16 @@ class TransconnectApi {
         }
     }
 
+    /** Get all posts by a specific user */
+
+    static async getUserPosts(userId) {
+        try {
+            let res = await this.request(`posts/users/${userId}`);
+            return res.posts;
+        } catch (err) {
+            console.error(`error fetching ${username}'s posts`, err);
+        }
+    }
 
     /** Get a single post by id */
 
@@ -150,9 +164,9 @@ class TransconnectApi {
 
     /** Edit a post */
 
-    static async editPost(postId, post) {
+    static async editPost(postId, post, userId) {
         try {
-            let res = await this.request(`posts/${postId}`, post, 'patch');
+            let res = await this.request(`posts/${postId}`, { post, userId }, 'patch');
             return res.post;
         } catch (err) {
             console.error("error editing post", err);
@@ -182,11 +196,22 @@ class TransconnectApi {
         }
     }
 
+    /** Get a comment */
+
+    static async getComment(postId, commentId) {
+        try {
+            let res = await this.request(`posts/${postId}/comments/${commentId}`);
+            return res.comment;
+        } catch (err) {
+            console.error(`error fetching comment with id: ${commentId}`, err);
+        }
+    }
+
     /** Make a comment */
 
-    static async createComment(postId, comment) {
+    static async createComment(postId, content, authorId) {
         try {
-            let res = await this.request(`posts/${postId}/comments`, comment, 'post');
+            let res = await this.request(`posts/${postId}/comments`, { content, authorId }, 'post');
             return res.comment;
         } catch (err) {
             console.error("error creating comment", err);
@@ -201,6 +226,17 @@ class TransconnectApi {
             return res.comment;
         } catch (err) {
             console.error("error editing comment", err);
+        }
+    }
+
+    /** Delete a comment */
+
+    static async deleteComment(postId, commentId, comment) {
+        try {
+            let res = await this.request(`posts/${postId}/comments/${commentId}`, comment, 'delete');
+            return res.deleted;
+        } catch (err) {
+            console.error("error deleting comment", err);
         }
     }
 
@@ -253,6 +289,7 @@ class TransconnectApi {
     static async authenticate(username, password) {
         try {
             let res = await this.request('auth/token', { username, password }, 'post');
+            if (res.error) throw new Error("Invalid credentials");
             return res.token;
         } catch (err) {
             console.error("error loging user in (error creating token)", err);
@@ -261,9 +298,9 @@ class TransconnectApi {
 
     /** Edit (patch) user information */
 
-    static async editUser(username, password, email) {
+    static async editUser(username, user) {
         try {
-            let res = await this.request(`users/${username}`, { username, password, email }, "patch");
+            let res = await this.request(`users/${username}`, user, "patch");
             return res.user;
         } catch (err) {
             console.error("error editing user information", err);
@@ -291,12 +328,8 @@ class TransconnectApi {
                 accessibility: accessibility
             };
 
-            // Remove any empty query parameters
             for (const key in queryParams) {
-                if (queryParams[key] === '') {
-                    delete queryParams[key];
-                }
-                if (queryParams[key] === false) {
+                if (!queryParams[key]) {
                     delete queryParams[key];
                 }
             }
@@ -305,6 +338,7 @@ class TransconnectApi {
             return res.bathrooms;
         } catch (err) {
             console.error("error getting bathrooms", err);
+            return [];
         }
     }
 

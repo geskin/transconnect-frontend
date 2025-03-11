@@ -1,16 +1,13 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-/** SignupForm: displays signup form and handles submission */
+import { Card, CardContent, Typography, TextField, Button, Box } from "@mui/material";
 
 const SignupForm = ({ signup }) => {
     const [formData, setFormData] = useState({
         username: "",
         password: "",
-        firstName: "",
-        lastName: "",
-        email: ""
+        email: "",
+        pronouns: ""
     });
     const navigate = useNavigate();
 
@@ -28,75 +25,63 @@ const SignupForm = ({ signup }) => {
         setFormData({
             username: "",
             password: "",
-            firstName: "",
-            lastName: "",
-            email: ""
+            email: "",
+            pronouns: ""
         });
         navigate("/");
     };
 
     return (
-        <div className="Form">
-            <div className="container col-md-6 offset-md-3 col-lg-4 offset-lg-4">
-                <h2 className="mb-3">Sign Up</h2>
-                <div className="card">
-                    <div className="card-body">
-                        <form onSubmit={gatherInput}>
-                            <div className="mb-3">
-                                <label className="form-label" htmlFor="username"><b>Username</b></label>
-                                <input
-                                    onChange={handleChange}
-                                    type="text"
-                                    name="username"
-                                    value={formData.username}
-                                    id="username"
-                                    className="form-control"
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label" htmlFor="password"><b>Password</b></label>
-                                <input
-                                    onChange={handleChange}
-                                    type="password"
-                                    name="password"
-                                    value={formData.password}
-                                    id="password"
-                                    className="form-control"
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label" htmlFor="email"><b>Email</b></label>
-                                <input
-                                    onChange={handleChange}
-                                    type="text"
-                                    name="email"
-                                    value={formData.email}
-                                    id="email"
-                                    className="form-control"
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label" htmlFor="pronouns"><b>Pronouns</b></label>
-                                <input
-                                    onChange={handleChange}
-                                    type="text"
-                                    name="pronouns"
-                                    value={formData.pronouns}
-                                    id="pronouns"
-                                    className="form-control"
-                                />
-                            </div>
-                            <div className="d-grid">
-                                <button className="btn btn-primary">
-                                    Sign Up
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Box display="flex" justifyContent="center" mt={4}>
+            <Card sx={{ width: 400, p: 3, boxShadow: 3, borderRadius: 2 }}>
+                <CardContent>
+                    <Typography variant="h4" fontWeight="bold" gutterBottom>
+                        Sign Up
+                    </Typography>
+                    <form onSubmit={gatherInput}>
+                        <TextField
+                            fullWidth
+                            label="Username"
+                            name="username"
+                            value={formData.username}
+                            onChange={handleChange}
+                            sx={{ mb: 2 }}
+                        />
+                        <TextField
+                            fullWidth
+                            label="Email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            sx={{ mb: 2 }}
+                        />
+                        <TextField
+                            fullWidth
+                            label="Pronouns"
+                            name="pronouns"
+                            value={formData.pronouns}
+                            onChange={handleChange}
+                            sx={{ mb: 2 }}
+                        />
+                        <TextField
+                            fullWidth
+                            label="Password"
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            sx={{ mb: 2 }}
+                        />
+                        <Box mt={2}>
+                            <Button type="submit" variant="contained" color="primary" fullWidth>
+                                Sign Up
+                            </Button>
+                        </Box>
+                    </form>
+                </CardContent>
+            </Card>
+        </Box>
     );
-}
+};
 
 export default SignupForm;

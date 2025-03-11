@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { Card, CardContent, Typography, Button, Box } from "@mui/material";
+import { Card, CardContent, Typography, Button, Box, CardActions } from "@mui/material";
 import UserContext from "../UserContext";
 import TransconnectApi from "../api";
 import { formatDate } from "../utils/formatDate";
@@ -10,6 +10,8 @@ const Profile = ({ logout }) => {
     const { currUser } = useContext(UserContext);
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
+
+    if (!username || !currUser) return <Typography>Loading...</Typography>;
 
     const deleteProfile = async () => {
         if (window.confirm("Are you sure you want to delete your profile? This action cannot be undone.")) {
@@ -38,8 +40,6 @@ const Profile = ({ logout }) => {
         }
     }, [username, currUser, navigate]);
 
-    if (!currUser) return <Typography>Loading...</Typography>;
-
     const displayedUser = username === currUser.username ? currUser : user;
 
     return (
@@ -67,6 +67,9 @@ const Profile = ({ logout }) => {
                     <Typography variant="caption" display="block" mt={2}>
                         Created on: {formatDate(displayedUser?.createdAt)}
                     </Typography>
+                </CardContent>
+
+                <CardActions>
                     {(username === currUser.username || currUser.role === 'ADMIN') && (
                         <div>
                             <Button
@@ -88,7 +91,8 @@ const Profile = ({ logout }) => {
                             </Button>
                         </div>
                     )}
-                </CardContent>
+                    <Button onClick={() => navigate(`/users/${username}/posts`)} size="small">Posts</Button>
+                </CardActions>
             </Card>
         </Box>
     );

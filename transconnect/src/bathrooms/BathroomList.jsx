@@ -28,14 +28,11 @@ const BathroomList = () => {
     }, [accessibility, location]);
 
     const handleChange = (e) => {
-        setChecked(e.target.checked);
-        if (checked) {
-            setAccessibility(true);
-        } else {
-            setAccessibility(false);
-        }
+        const newChecked = e.target.checked;
+        setChecked(newChecked);
+        setAccessibility(newChecked);
 
-        console.debug(accessibility);
+        console.debug("Accessibility:", newChecked);
     };
 
     return (

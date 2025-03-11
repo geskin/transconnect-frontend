@@ -7,7 +7,7 @@ import { TextField, Button, Box } from "@mui/material";
 
 /** PostsList: list of posts (in card form) made by users 
  * 
- * auth required: logged in
+ * Auth required: logged in
  */
 
 const PostsList = () => {
@@ -18,9 +18,7 @@ const PostsList = () => {
     const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
-        if (!currUser) {
-            return;
-        }
+        if (!currUser) return;
 
         const fetchPosts = async () => {
             try {
@@ -44,29 +42,41 @@ const PostsList = () => {
         fetchTags();
     }, [currUser]);
 
+    /** Delete a post */
+    const handleDeletePost = async (postId) => {
+        try {
+            await TransconnectApi.deletePost(postId);
+            setPosts(posts.filter(post => post.id !== postId)); // Update UI immediately
+        } catch (err) {
+            console.error("Error deleting post", err);
+        }
+    };
+
+    /** Handle tag filtering */
     const handleTagClick = async (e) => {
         e.preventDefault();
         const tag = e.target.value;
 
-        // If "X" (clear filter) is clicked, reset search term
-        setSearchTag(tag ? tag : "");
+        setSearchTag(tag); // Update state for UI
 
         try {
-            const data = await TransconnectApi.getPosts(searchTag ? [searchTag] : []);
+            const data = await TransconnectApi.getPosts(tag ? [tag] : []);
             setPosts(data);
         } catch (err) {
             console.error("Error fetching posts", err);
         }
     };
 
+    /** Handle search input change */
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
 
+    /** Handle search submit */
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
         try {
-            const data = await TransconnectApi.getPosts(searchTerm);
+            const data = await TransconnectApi.getPosts([], searchTerm);
             setPosts(data);
         } catch (err) {
             console.error("Error fetching posts", err);
@@ -104,22 +114,21 @@ const PostsList = () => {
 
             {/* Post Cards */}
             <div>
-                {posts ? (
-                    <div>
-                        {posts.map((p) => (
-                            <PostCard
-                                key={p.id}
-                                id={p.id}
-                                title={p.title}
-                                createdAt={p.createdAt}
-                                editedAt={p.editedAt}
-                                content={p.content}
-                                user={p.user}
-                                comments={p.comments}
-                                tags={p.tags}
-                            />
-                        ))}
-                    </div>
+                {posts.length > 0 ? (
+                    posts.map((p) => (
+                        <PostCard
+                            key={p.id}
+                            id={p.id}
+                            title={p.title}
+                            createdAt={p.createdAt}
+                            editedAt={p.editedAt}
+                            content={p.content}
+                            user={p.user}
+                            comments={p.comments}
+                            tags={p.tags}
+                            onDelete={handleDeletePost}
+                        />
+                    ))
                 ) : (
                     <p className="lead white-letters">Sorry, no results were found!</p>
                 )}

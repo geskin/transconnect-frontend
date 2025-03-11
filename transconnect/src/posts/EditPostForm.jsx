@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Card, CardContent, Typography, TextField, Button, Box, FormControlLabel, Checkbox } from "@mui/material";
 import UserContext from "../UserContext";
 import TransconnectApi from "../api";
 
@@ -7,10 +8,8 @@ import TransconnectApi from "../api";
  * 
  * auth required: admin or creator of post
  */
-
 const EditPostForm = ({ editPost }) => {
     const { id } = useParams();
-    console.debug("post id:", id);
     const { currUser } = useContext(UserContext);
     const navigate = useNavigate();
     const [tags, setTags] = useState([]);
@@ -21,77 +20,67 @@ const EditPostForm = ({ editPost }) => {
         tags: []
     });
 
+    if (!currUser) return <Typography>Loading...</Typography>;
 
-    //how to do this so that if it isn't admin or currUser's post to navigate away?
     useEffect(() => {
-        if (currUser.role !== 'ADMIN' || !currUser) navigate('/posts');
+        console.debug("EditPostForm currUser debugging", currUser);
 
         const fetchPost = async () => {
             try {
                 const post = await TransconnectApi.getPost(id);
-                console.debug(post); //does this include userId?
-                setPost(post);
                 setFormData({
-                    title: post.title,
-                    content: post.content,
-                    tags: post.tags
+                    title: post.title || "",
+                    content: post.content || "",
+                    tags: post.tags || []
                 });
+                if (currUser.id !== post.userId && currUser.role !== "ADMIN") {
+                    navigate("/posts");
+                    return;
+                }
+                setPost(post);
             } catch (err) {
                 console.error("Error fetching post", err);
             }
-        }
+        };
+
         const fetchTags = async () => {
             try {
                 const data = await TransconnectApi.getTags();
-                let tagList = data.map(t => (t.name));
-                setTags(tagList);
+                setTags(data.map(t => t.name));
             } catch (err) {
                 console.error("Error fetching tags", err);
             }
-        }
+        };
+
         fetchPost();
         fetchTags();
-    }, [id, currUser]);
 
-    useEffect(() => {
-        if (currUser.id !== post.userId || currUser.role !== 'ADMIN') navigate('/posts');
-    }, [currUser]);
+        console.debug("debugging post in edit post form", post);
+
+    }, [id, currUser, navigate]);
 
     const handleChange = evt => {
         const { name, value } = evt.target;
-        setFormData(formData => ({
-            ...formData,
+        setFormData(fData => ({
+            ...fData,
             [name]: value
         }));
     };
 
-    const handleCheckbox = e => {
-        if (formData.tags.includes(e.target.value)) {
-            //remove e.target.value from array
-            const filteredTags = formData.tags.filter(t => (t !== e.target.value)); //include everything in the types array except for e.target.value
-            setFormData(formData => ({
-                ...formData,
-                tags: filteredTags
-            }));
-        } else {
-            setFormData(formData => ({
-                ...formData,
-                tags: [...formData.tags, e.target.value]
-            }));
-        }
-    }
+    const handleCheckbox = evt => {
+        const value = evt.target.value;
+        setFormData(fData => ({
+            ...fData,
+            tags: fData.tags.includes(value)
+                ? fData.tags.filter(t => t !== value)
+                : [...fData.tags, value]
+        }));
+    };
 
-    const gatherInput = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (evt) => {
+        evt.preventDefault();
         try {
-            await editPost(id, formData);
-
-            setFormData({ //do I need this?
-                title: formData.title,
-                content: formData.content,
-                tags: formData.tags
-            });
-
+            await editPost(id, formData, post.userId);
             navigate(`/posts/${id}`);
         } catch (err) {
             console.error("Error updating post:", err);
@@ -99,63 +88,66 @@ const EditPostForm = ({ editPost }) => {
     };
 
     return (
-        <div className="Form">
-            <div className="container col-md-6 offset-md-3 col-lg-4 offset-lg-4">
-                <h2 className="mb-3">Edit Post</h2>
-                <div className="card">
-                    <div className="card-body">
-                        <form onSubmit={gatherInput}>
-                            <div className="mb-3">
-                                <label className="form-label" htmlFor="title"><b>Title</b></label>
-                                <input
-                                    onChange={handleChange}
-                                    type="text"
-                                    name="title"
-                                    value={formData.title}
-                                    id="title"
-                                    className="form-control"
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label" htmlFor="content"><b>Content</b></label>
-                                <input
-                                    onChange={handleChange}
-                                    type="text"
-                                    name="content"
-                                    value={formData.content}
-                                    id="content"
-                                    className="form-control"
-                                />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label"><b>Tags:</b></label>
-                                {tags.map((t) => (
-                                    <div key={t} className="form-check">
-                                        <input
-                                            onChange={handleCheckbox}
-                                            type="checkbox"
-                                            name={t}
-                                            value={t}
-                                            id={t}
-                                            checked={formData.tags.includes(t)}
-                                            className="form-check-input"
-                                        />
-                                        <label className="form-check-label" htmlFor={t}>{t}</label>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="d-grid">
-                                <button type="submit" className="btn btn-primary">
-                                    Update post
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Box display="flex" justifyContent="center" mt={4}>
+            <Card sx={{ width: 400, p: 3, boxShadow: 3, borderRadius: 2 }}>
+                <CardContent>
+                    <Typography variant="h4" fontWeight="bold" gutterBottom>
+                        Edit Post
+                    </Typography>
+                    <form onSubmit={handleSubmit}>
+                        <TextField
+                            fullWidth
+                            label="Title"
+                            name="title"
+                            value={formData.title}
+                            onChange={handleChange}
+                            sx={{ mb: 2 }}
+                        />
+                        <TextField
+                            fullWidth
+                            label="Content"
+                            name="content"
+                            value={formData.content}
+                            onChange={handleChange}
+                            multiline
+                            rows={3}
+                            sx={{ mb: 2 }}
+                        />
+                        <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 1 }}>
+                            Tags:
+                        </Typography>
+                        {tags.map(t => (
+                            <FormControlLabel
+                                key={t}
+                                control={
+                                    <Checkbox
+                                        checked={formData.tags.includes(t)}
+                                        onChange={handleCheckbox}
+                                        value={t}
+                                    />
+                                }
+                                label={t}
+                            />
+                        ))}
+                        <Box mt={2}>
+                            <Button type="submit" variant="contained" color="primary" fullWidth>
+                                Update Post
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                fullWidth
+                                sx={{ mt: 2 }}
+                                onClick={() => navigate("/posts")}
+                            >
+                                Cancel
+                            </Button>
+                        </Box>
+                    </form>
+                </CardContent>
+            </Card>
+        </Box>
     );
-
-}
+};
 
 export default EditPostForm;

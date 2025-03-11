@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import BottomNavigation from '@mui/material/BottomNavigation';
@@ -11,13 +11,21 @@ import AddCommentIcon from '@mui/icons-material/AddComment';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import TransconnectApi from "../api";
+import UserContext from "../UserContext";
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { formatDate } from "./formatDate";
+import { Link } from "react-router-dom";
 
 export default function CommentsBottomNavigation({ postId, comments }) {
+    const { currUser } = useContext(UserContext);
     const [value, setValue] = useState(0);
     const [showInput, setShowInput] = useState(false);
     const [newComment, setNewComment] = useState("");
     const [commentList, setCommentList] = useState(comments || []);
     const ref = useRef(null);
+
+    console.debug("inside commentsbottomnav", commentList);
 
     useEffect(() => {
         ref.current.ownerDocument.body.scrollTop = 0;
@@ -25,15 +33,27 @@ export default function CommentsBottomNavigation({ postId, comments }) {
 
     const handleAddComment = async () => {
         if (newComment.trim() !== "") {
-            setCommentList([...commentList, { primary: newComment, secondary: "Just now", person: "You" }]);
-            setNewComment("");
-            setShowInput(false);
             try {
-                const data = await TransconnectApi.createComment(postId, newComment);
-                console.debug(data);
+                const data = await TransconnectApi.createComment(postId, newComment, currUser.id);
+                console.debug("New comment created", data);
+
+                setCommentList([...commentList, data]);
+                setNewComment("");
+                setShowInput(false);
             } catch (err) {
                 console.error("Error saving comment", err);
             }
+        }
+    };
+
+
+    const handleDeleteComment = async (commentId) => {
+        try {
+            let comment = await TransconnectApi.getComment(postId, commentId);
+            await TransconnectApi.deleteComment(postId, commentId, comment);
+            setCommentList(commentList.filter(comment => comment.id !== commentId));
+        } catch (err) {
+            console.error("Error deleting comment", err);
         }
     };
 
@@ -42,9 +62,22 @@ export default function CommentsBottomNavigation({ postId, comments }) {
             <CssBaseline />
             {commentList.length > 0 ? (
                 <List>
-                    {commentList.map(({ primary, secondary, person }, index) => (
-                        <ListItemButton key={index}>
-                            <ListItemText primary={primary} secondary={`${secondary} - ${person}`} />
+                    {commentList.map(({ id, content, createdAt, author }) => (
+                        <ListItemButton key={id}>
+                            <ListItemText
+                                primary={content}
+                                secondary={
+                                    <>
+                                        {formatDate(createdAt)} -{" "}
+                                        <Link to={`/profile/${author?.username}`} style={{ textDecoration: 'none', color: 'black' }}>
+                                            {author?.username ? `@${author.username}` : "Unknown"}
+                                        </Link>
+                                    </>
+                                }
+                            />
+                            <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteComment(id)}>
+                                <DeleteIcon />
+                            </IconButton>
                         </ListItemButton>
                     ))}
                 </List>

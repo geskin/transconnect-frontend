@@ -2,16 +2,16 @@ import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../css/Card.css";
 import UserContext from "../UserContext";
+import TransconnectApi from "../api";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import { formatDate } from "../utils/formatDate";
-import TransconnectApi from "../api";
 
 /** PostCard: Individual card for a post. Displayed in PostList. */
 
-const PostCard = ({ title, id, createdAt, editedAt, content, user, comments, tags }) => {
+const PostCard = ({ title, id, createdAt, content, user, tags, onDelete }) => {
     const { currUser } = useContext(UserContext);
     const navigate = useNavigate();
 
@@ -19,24 +19,21 @@ const PostCard = ({ title, id, createdAt, editedAt, content, user, comments, tag
         try {
             let post = await TransconnectApi.getPost(id);
             await TransconnectApi.deletePost(id, post);
-            navigate("/posts");
+            onDelete(id);
         } catch (err) {
-            console.error("Error deleting resource:", err);
+            console.error("Error deleting post:", err);
         }
-    }
+    };
 
     return (
-        <Card className="Card card">
+        <Card className="Card card" sx={{ minHeight: 450, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <CardContent className="card-body">
-                <Link to={`/users/${user.username}`}>
-                    <h3>@{user.username}</h3>
-                </Link>
-                <Link to={`/posts/${id}`}>
-                    <h3 className="card-title text-start">{title}</h3>
-                </Link>
-                <p className="text-start"><small>{content}</small></p>
-                <i>{formatDate(createdAt)}</i>
-
+                <h3><Link to={`/users/${user.username}`}>@{user.username}</Link></h3>
+                <h2 className="card-title text-start">
+                    <Link to={`/posts/${id}`}><b>{title}</b></Link>
+                </h2>
+                <p className="text-start">{content}</p>
+                <small><i>Posted {formatDate(createdAt)}</i></small>
                 {tags && tags.length > 0 && (
                     <div>
                         {tags.map(t => (
@@ -47,31 +44,22 @@ const PostCard = ({ title, id, createdAt, editedAt, content, user, comments, tag
                     </div>
                 )}
             </CardContent>
-
-            <CardActions>
+            <CardActions sx={{ padding: "16px", display: "flex", justifyContent: "flex-start" }}>
                 {currUser.role === "ADMIN" || currUser.username === user.username ? (
                     <div>
                         <Button
                             variant="contained"
-                            color="primary"
-                            sx={{ mt: 2 }}
-                            component={Link}
-                            to={`/posts/${id}/edit`}
-                        >
-                            Edit
-                        </Button>
-                        <Button
-                            variant="contained"
                             color="error"
-                            sx={{ mt: 2, ml: 2 }}
+                            sx={{ ml: 2 }}
                             onClick={deletePost}
                         >
                             Delete
                         </Button>
-                        <Button onClick={() => navigate(`/posts/${id}`)} size="small">Details</Button>
+                        <Button onClick={() => navigate(`/posts/${id}/edit`)} size="small">Edit</Button>
+                        <Button onClick={() => navigate(`/posts/${id}`)} size="small">View Comments</Button>
                     </div>
                 ) : (
-                    <Button onClick={() => navigate(`/posts/${id}`)} size="small">Details</Button>
+                    <Button onClick={() => navigate(`/posts/${id}`)} size="small">View Comments</Button>
                 )}
             </CardActions>
         </Card>

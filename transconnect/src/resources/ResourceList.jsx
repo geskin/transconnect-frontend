@@ -7,13 +7,6 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 
-/** ResourceList: displays cards for every existing resource
- * 
- * auth required: none
- * 
- * unapproved resources and certain functionalities are only visible/accessible to admins
- */
-
 const ResourceList = () => {
     const [resources, setResources] = useState([]);
     const [types, setTypes] = useState([]);
@@ -26,13 +19,14 @@ const ResourceList = () => {
             try {
                 let data = await TransconnectApi.getResources();
                 if (currUser.role === "USER") {
-                    data = data.filter((r) => r.approved); // Only approved resources for non-admin users
+                    data = data.filter((r) => r.approved);
                 }
                 setResources(data);
             } catch (err) {
                 console.error("Error fetching resources", err);
             }
         };
+
         const fetchTypes = async () => {
             try {
                 const data = await TransconnectApi.getTypes();
@@ -47,38 +41,46 @@ const ResourceList = () => {
         fetchTypes();
     }, [currUser]);
 
+    const handleDeleteResource = async (resourceId) => {
+        try {
+            await TransconnectApi.deleteResource(resourceId);
+            const updatedResources = await TransconnectApi.getResources();
+            setResources(updatedResources);
+        } catch (err) {
+            console.error("Error deleting resource", err);
+        }
+    };
+
     const handleClick = async (e) => {
         e.preventDefault();
-        setSearchType(e.target.value);
-        // filter posts by type (can only search by one type at a time?)
+        const selectedType = e.target.value;
+        setSearchType(selectedType);
+
         try {
-            const data = await TransconnectApi.getResources(searchType);
+            const data = await TransconnectApi.getResources("", selectedType);
             setResources(data);
         } catch (err) {
             console.error("Error fetching resources", err);
         }
     };
 
-    // Handle search bar input change
     const handleChange = (e) => {
         setSearchTerm(e.target.value);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         try {
-            const data = await TransconnectApi.getResources(searchTerm);
+            const data = await TransconnectApi.getResources(searchTerm, "");
             setResources(data);
         } catch (err) {
             console.error("Error fetching resources", err);
         }
     };
 
-    console.debug(resources);
-
     return (
         <div>
-            {/* Search Bar */}
             <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1, p: 2 }}>
                 <TextField
                     fullWidth
@@ -88,25 +90,22 @@ const ResourceList = () => {
                     onChange={handleChange}
                     sx={{ maxWidth: 600 }}
                 />
-                <Button type="submit" variant="contained">
+                <Button type="submit" variant="contained" onClick={handleSubmit}>
                     Search
                 </Button>
             </Box>
 
-
-            {/* Filter Buttons */}
             <div>
                 <Button value="" onClick={handleClick} variant="outlined">
                     X
                 </Button>
                 {types.map((t) => (
-                    <Button key={t} name={t} value={t} onClick={handleClick} variant="outlined" sx={{ m: 0.5 }}>
+                    <Button key={t} value={t} onClick={handleClick} variant="outlined" sx={{ m: 0.5 }}>
                         {t}
                     </Button>
                 ))}
             </div>
 
-            {/* Resource Cards */}
             <div>
                 {resources.length ? (
                     <div>
@@ -120,6 +119,7 @@ const ResourceList = () => {
                                 types={r.types}
                                 userId={r.userId}
                                 approved={r.approved}
+                                onDelete={handleDeleteResource}
                             />
                         ))}
                     </div>
@@ -128,7 +128,6 @@ const ResourceList = () => {
                 )}
             </div>
 
-            {/* Submit a Resource Button */}
             <Box sx={{ textAlign: "center", mt: 2 }}>
                 <Button variant="contained" component={Link} to="/resources/new">
                     Submit a resource

@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 
 /** ResourceCard: the card displayed in ResourceList for each individual resource */
 
-const ResourceCard = ({ id, name, description, url, types, userId, approved }) => {
+const ResourceCard = ({ id, name, description, url, types, userId, approved, onDelete }) => {
     const { currUser } = useContext(UserContext);
     const [approval, setApproval] = useState(approved);
     const navigate = useNavigate();
@@ -30,14 +30,14 @@ const ResourceCard = ({ id, name, description, url, types, userId, approved }) =
         try {
             let resource = await TransconnectApi.getResource(id);
             await TransconnectApi.deleteResource(id, resource);
-            navigate("/resources");
+            onDelete(id);
         } catch (err) {
             console.error("Error deleting resource:", err);
         }
     }
 
     return (
-        <Card className="Card card">
+        <Card className="Card card" sx={{ minHeight: 400, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <CardContent className="card-body">
                 <h2 className="card-title text-start">
                     {url ? <Link to={url}><b>{name}</b></Link> : <b>{name}</b>}
@@ -51,19 +51,20 @@ const ResourceCard = ({ id, name, description, url, types, userId, approved }) =
                     ))}
                 </div>
             </CardContent>
-            <CardActions>
-                {currUser.role === 'ADMIN' ? (
+            <CardActions sx={{ padding: "16px", display: "flex", justifyContent: "flex-start" }}>
+                {currUser.role === "ADMIN" ? (
                     <div>
-                        <button
-                            className="btn btn-danger fw-bold text-uppercase float-end"
+                        <Button
+                            variant="contained"
+                            sx={{ backgroundColor: "black", color: "white", "&:hover": { backgroundColor: "#333" } }}
                             onClick={toggleApproval}
                         >
                             {approval ? "Approved" : "Approve"}
-                        </button>
+                        </Button>
                         <Button
                             variant="contained"
                             color="error"
-                            sx={{ mt: 2, ml: 2 }}
+                            sx={{ ml: 2 }}
                             onClick={deleteResource}
                         >
                             Delete
@@ -72,11 +73,10 @@ const ResourceCard = ({ id, name, description, url, types, userId, approved }) =
                         <Button onClick={() => navigate(`/resources/${id}`)} size="small">Details</Button>
                     </div>
                 ) : (
-                    <div>
-                        <Button onClick={() => navigate(`/resources/${id}`)} size="small">Details</Button>
-                    </div>
+                    <Button onClick={() => navigate(`/resources/${id}`)} size="small">Details</Button>
                 )}
             </CardActions>
+
         </Card>
     );
 };

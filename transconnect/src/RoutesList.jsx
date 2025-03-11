@@ -15,6 +15,7 @@ import PostDetail from "./posts/PostDetail";
 import EditResourceForm from "./resources/EditResourceForm";
 import EditPostForm from "./posts/EditPostForm";
 import BathroomList from "./bathrooms/BathroomList";
+import UserPostsList from "./posts/UserPostsList";
 
 /** RoutesList: list of all app routes */
 
@@ -26,6 +27,7 @@ const RoutesList = ({ signup, login, logout, editUser, createPost, submitResourc
             <Route path="/register" element={<SignupForm signup={signup} />} />
             <Route path="/users/:username" element={<Profile logout={logout} />} />
             <Route path="/users/:username/edit" element={<EditUserForm editUser={editUser} />} />
+            <Route path="/users/:username/posts" element={<UserPostsList />} />
             <Route path="/posts" element={<PostsList />} />
             <Route path="/posts/:id" element={<PostDetail />} />
             <Route path="/posts/new" element={<NewPostForm createPost={createPost} />} />

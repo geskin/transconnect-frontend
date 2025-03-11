@@ -1,0 +1,10 @@
+.post-details {
+    text-align: left;
+    padding-left: 20px;
+}
+
+.post-details h3,
+.post-details p,
+.post-details small {
+    color: black;
+}

@@ -8,7 +8,7 @@ import CardContent from '@mui/material/CardContent';
 
 const BathroomCard = ({ name, street, directions, comment }) => {
     return (
-        <Card className="BathroomCard card">
+        <Card className="BathroomCard card" sx={{ minHeight: 300, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <CardContent className="card-body">
                 <h2 className="card-title text-start">
                     {name}
