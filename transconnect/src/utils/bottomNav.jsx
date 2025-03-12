@@ -17,19 +17,35 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { formatDate } from "./formatDate";
 import { Link } from "react-router-dom";
 
-export default function CommentsBottomNavigation({ postId, comments }) {
+export default function CommentsBottomNavigation({ postId }) {
     const { currUser } = useContext(UserContext);
     const [value, setValue] = useState(0);
     const [showInput, setShowInput] = useState(false);
     const [newComment, setNewComment] = useState("");
-    const [commentList, setCommentList] = useState(comments);
+    const [commentList, setCommentList] = useState({});
     const ref = useRef(null);
 
-    console.debug("inside commentsbottomnav", commentList);
+
 
     useEffect(() => {
         ref.current.ownerDocument.body.scrollTop = 0;
     }, [value]);
+
+    useEffect(() => {
+        const fetchComments = async () => {
+            try {
+                const comments = await TransconnectApi.getComments(postId);
+                console.debug("comments prop debugging", comments);
+                setCommentList(comments);
+            } catch (err) {
+                console.error(`Error fetching comments associated with post id #${postId}`, err);
+            }
+        }
+
+        console.debug("commentList inside commentsbottomnav", commentList);
+
+        fetchComments();
+    }, [postId]);
 
     const handleAddComment = async () => {
         if (newComment.trim() !== "") {
@@ -46,12 +62,11 @@ export default function CommentsBottomNavigation({ postId, comments }) {
         }
     };
 
-
-    const handleDeleteComment = async (commentId) => {
+    const handleDeleteComment = async (commentId, authorUsername) => {
         try {
             let comment = await TransconnectApi.getComment(postId, commentId);
-            await TransconnectApi.deleteComment(postId, commentId, comment);
-            setCommentList(commentList.filter(comment => comment.id !== commentId));
+            await TransconnectApi.deleteComment(postId, commentId, comment, authorUsername);
+            setCommentList(commentList.filter(comment => comment.id !== commentId)); //only makes it look like a comment is deleted right now
         } catch (err) {
             console.error("Error deleting comment", err);
         }
@@ -70,14 +85,19 @@ export default function CommentsBottomNavigation({ postId, comments }) {
                                     <>
                                         {formatDate(createdAt)} -{" "}
                                         <Link to={`/profile/${author?.username}`} style={{ textDecoration: 'none', color: 'black' }}>
-                                            {author?.username ? `@${author.username}` : "Unknown"}
+                                            {author?.username === currUser.username ? "You" : `@${author?.username}`}
                                         </Link>
                                     </>
                                 }
                             />
-                            <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteComment(id)}>
-                                <DeleteIcon />
-                            </IconButton>
+                            {(currUser.username === author?.username || currUser.role === 'ADMIN') && (
+                                <>
+                                    <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteComment(id, author.username)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </>
+                            )}
+
                         </ListItemButton>
                     ))}
                 </List>

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import UserContext from "../UserContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import TransconnectApi from "../api";
 import PostCard from "./PostCard";
 import { TextField, Button, Box } from "@mui/material";
@@ -16,9 +16,10 @@ const PostsList = () => {
     const [searchTag, setSearchTag] = useState("");
     const { currUser } = useContext(UserContext);
     const [searchTerm, setSearchTerm] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
-        if (!currUser) return;
+        if (!currUser) navigate('/');
 
         const fetchPosts = async () => {
             try {

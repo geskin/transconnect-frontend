@@ -28,32 +28,35 @@ const EditPostForm = ({ editPost }) => {
         const fetchPost = async () => {
             try {
                 const post = await TransconnectApi.getPost(id);
+                const formDataTags = post.tags.map(t => t.name);
                 setFormData({
                     title: post.title || "",
                     content: post.content || "",
-                    tags: post.tags || []
+                    tags: formDataTags || []
                 });
                 if (currUser.id !== post.userId && currUser.role !== "ADMIN") {
                     navigate("/posts");
                     return;
                 }
                 setPost(post);
+                const tagsList = await TransconnectApi.getTags();
+                setTags(tagsList.map(t => t.name));
             } catch (err) {
                 console.error("Error fetching post", err);
             }
         };
 
-        const fetchTags = async () => {
-            try {
-                const data = await TransconnectApi.getTags();
-                setTags(data.map(t => t.name));
-            } catch (err) {
-                console.error("Error fetching tags", err);
-            }
-        };
+        // const fetchTags = async () => {
+        //     try {
+        //         const data = await TransconnectApi.getTags();
+        //         setTags(data.map(t => t.name));
+        //     } catch (err) {
+        //         console.error("Error fetching tags", err);
+        //     }
+        // };
 
         fetchPost();
-        fetchTags();
+        // fetchTags();
     }, [id, currUser, navigate]);
 
     const handleChange = evt => {
@@ -66,12 +69,14 @@ const EditPostForm = ({ editPost }) => {
 
     const handleCheckbox = evt => {
         const value = evt.target.value;
+        console.debug("formData before handlingcheckbox", formData.tags);
         setFormData(fData => ({
             ...fData,
             tags: fData.tags.includes(value)
                 ? fData.tags.filter(t => t !== value)
                 : [...fData.tags, value]
         }));
+        console.debug("formData after handlingcheckbox", formData.tags);
     };
 
     const handleSubmit = async (evt) => {

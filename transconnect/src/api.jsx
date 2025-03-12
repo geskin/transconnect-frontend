@@ -232,9 +232,9 @@ class TransconnectApi {
 
     /** Delete a comment */
 
-    static async deleteComment(postId, commentId, comment) {
+    static async deleteComment(postId, commentId, comment, username) {
         try {
-            let res = await this.request(`posts/${postId}/comments/${commentId}`, comment, 'delete');
+            let res = await this.request(`posts/${postId}/comments/${commentId}`, { comment, username }, 'delete');
             return res.deleted;
         } catch (err) {
             console.error("error deleting comment", err);

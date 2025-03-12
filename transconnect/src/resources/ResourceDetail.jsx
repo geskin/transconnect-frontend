@@ -30,7 +30,7 @@ const ResourceDetail = () => {
         fetchResource();
     }, [id]);
 
-    if (!resource.approved && currUser.role !== "ADMIN") navigate("/resources");
+    // if (!resource.approved && currUser?.role !== "ADMIN") navigate("/resources");
 
     const toggleApproval = async () => {
         try {
@@ -55,7 +55,7 @@ const ResourceDetail = () => {
         <Card className="Card card" sx={{ minHeight: 400, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <CardContent className="card-body">
                 {/* Admin-only approval status */}
-                {currUser.role === "ADMIN" && (
+                {currUser?.role === "ADMIN" && (
                     <p className="text-start" style={{ color: resource.approved ? "green" : "red", fontWeight: "bold" }}>
                         {resource.approved ? "Approved" : "Pending Approval"}
                     </p>
@@ -83,7 +83,7 @@ const ResourceDetail = () => {
             <CardActions sx={{ padding: "16px", display: "flex", justifyContent: "flex-start" }}>
                 <Button onClick={() => navigate("/resources")} size="small">Back to Resources</Button>
 
-                {currUser.role === "ADMIN" && (
+                {currUser?.role === "ADMIN" && (
                     <>
                         <Button
                             variant="contained"

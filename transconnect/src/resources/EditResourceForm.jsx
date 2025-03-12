@@ -31,34 +31,37 @@ const EditResourceForm = ({ updateResource }) => {
         const fetchResource = async () => {
             try {
                 const resource = await TransconnectApi.getResource(id);
+                const formDataTypes = resource.types.map(t => t.name); //extract type name
                 setFormData({
                     name: resource.name || "",
                     description: resource.description || "",
                     url: resource.url || "",
-                    types: resource.types || []
+                    types: formDataTypes || []
                 });
-                //fetch types logic goes here
+                const typesList = await TransconnectApi.getTypes();
+                setTypes(typesList.map(t => t.name));
             } catch (err) {
-                console.error("Error fetching resource", err);
+                console.error("Error fetching resource or list of types", err);
             }
         };
 
-        const fetchTypes = async () => {
-            try {
-                const data = await TransconnectApi.getTypes();
-                setTypes(data.map(t => t.name));
-            } catch (err) {
-                console.error("Error fetching resource types", err);
-            }
-        };
+        // const fetchTypes = async () => {
+        //     try {
+        //         const data = await TransconnectApi.getTypes();
+        //         setTypes(data.map(t => t.name));
+        //     } catch (err) {
+        //         console.error("Error fetching resource types", err);
+        //     }
+        // };
 
         fetchResource();
-        fetchTypes();
+        // fetchTypes();
     }, [id, currUser, navigate]);
 
     useEffect(() => {
-        console.debug(formData);
-        console.debug(types);
+        console.debug("Form data", formData);
+        console.debug("FormData types", formData.types);
+        console.debug("Types from api call", types);
     }, [formData]);
 
     const handleChange = evt => {
@@ -69,14 +72,15 @@ const EditResourceForm = ({ updateResource }) => {
         }));
     };
 
-    const handleCheckbox = evt => {
-        const value = evt.target.value;
+    const handleCheckbox = e => {
+        const value = e.target.value;
+        console.debug("formData before handlingcheckbox", formData.types);
         setFormData(fData => ({
-            ...fData,
             types: fData.types.includes(value)
                 ? fData.types.filter(t => t !== value)
                 : [...fData.types, value]
         }));
+        console.debug("formData after handlingcheckbox", formData.types);
     };
 
     const handleSubmit = async (evt) => {

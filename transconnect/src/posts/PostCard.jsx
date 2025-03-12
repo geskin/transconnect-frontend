@@ -26,14 +26,13 @@ const PostCard = ({ title, id, createdAt, content, user, tags, onDelete }) => {
     };
 
     return (
-        <Card className="Card card" sx={{ minHeight: 450, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <Card className="Card card" sx={{ minHeight: 400, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <CardContent className="card-body">
                 <h3><Link to={`/users/${user.username}`}>@{user.username}</Link></h3>
                 <h2 className="card-title text-start">
                     <Link to={`/posts/${id}`}><b>{title}</b></Link>
                 </h2>
                 <p className="text-start">{content}</p>
-                <small><i>Posted {formatDate(createdAt)}</i></small>
                 {tags && tags.length > 0 && (
                     <div>
                         {tags.map(t => (
@@ -43,6 +42,7 @@ const PostCard = ({ title, id, createdAt, content, user, tags, onDelete }) => {
                         ))}
                     </div>
                 )}
+                <small><i>Posted {formatDate(createdAt)}</i></small>
             </CardContent>
             <CardActions sx={{ padding: "16px", display: "flex", justifyContent: "flex-start" }}>
                 {currUser.role === "ADMIN" || currUser.username === user.username ? (

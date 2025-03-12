@@ -15,10 +15,11 @@ const ResourceList = () => {
     const { currUser } = useContext(UserContext);
 
     useEffect(() => {
+
         const fetchResources = async () => {
             try {
                 let data = await TransconnectApi.getResources();
-                if (currUser.role === "USER") {
+                if (!currUser || currUser?.role === "USER") {
                     data = data.filter((r) => r.approved);
                 }
                 setResources(data);

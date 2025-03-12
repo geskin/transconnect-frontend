@@ -52,7 +52,7 @@ const ResourceCard = ({ id, name, description, url, types, userId, approved, onD
                 </div>
             </CardContent>
             <CardActions sx={{ padding: "16px", display: "flex", justifyContent: "flex-start" }}>
-                {currUser.role === "ADMIN" ? (
+                {currUser?.role === "ADMIN" ? (
                     <div>
                         <Button
                             variant="contained"

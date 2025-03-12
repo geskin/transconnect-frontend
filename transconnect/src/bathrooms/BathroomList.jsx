@@ -19,6 +19,7 @@ const BathroomList = () => {
             try {
                 let data = await TransconnectApi.getBathrooms(location, accessibility);
                 setBathrooms(data);
+                console.debug("bathrooms data", data);
             } catch (err) {
                 console.error("Error fetching bathrooms", err);
             }
@@ -38,6 +39,9 @@ const BathroomList = () => {
     return (
         <div>
             <div>
+                <h2><b>List of unisex bathrooms. Default location is New York City!</b></h2>
+            </div>
+            <div>
                 <FormControlLabel control={
                     <Switch
                         checked={checked}
@@ -54,6 +58,7 @@ const BathroomList = () => {
                         street={b.street}
                         directions={b.directions}
                         comment={b.comment}
+                        approved={b.approved}
                     />
                 ))}
             </div>

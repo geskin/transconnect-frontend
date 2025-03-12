@@ -16,7 +16,6 @@ import { Button, Typography } from "@mui/material";
 const PostDetail = () => {
     const { id } = useParams();
     console.debug(id);
-    const [comments, setComments] = useState([]);
     const [post, setPost] = useState({ tags: [] });
     const [user, setUser] = useState({});
     const { currUser } = useContext(UserContext);
@@ -38,7 +37,6 @@ const PostDetail = () => {
                 console.debug(post);
                 if (post) {
                     setPost(post);
-                    setComments(post.comments);
                     setUser(post.user);
                 }
             } catch (err) {
@@ -52,7 +50,7 @@ const PostDetail = () => {
     /** Delete post */
     const handleDeletePost = async () => {
         try {
-            await TransconnectApi.deletePost(post.id);
+            await TransconnectApi.deletePost(id);
             navigate("/posts");
         } catch (err) {
             console.error("Error deleting post", err);
@@ -65,6 +63,15 @@ const PostDetail = () => {
                 <h4><Link to={`/users/${user.username}`}>@{user.username}</Link></h4>
                 <h3 className="mb-3">{post.title}</h3>
                 <p>{post.content}</p>
+                {post.tags && post.tags.length > 0 && (
+                    <div>
+                        {post.tags.map(t => (
+                            <Button variant="outlined" disabled key={t.name}>
+                                {t.name}
+                            </Button>
+                        ))}
+                    </div>
+                )}
                 <small><i>Posted {formatDate(post.createdAt)}</i></small>
                 {(currUser.role === "ADMIN" || currUser.username === user.username) && (
                     <div>
@@ -76,7 +83,7 @@ const PostDetail = () => {
                         >
                             Delete
                         </Button>
-                        <Button onClick={() => navigate(`/posts/${post.id}/edit`)} size="small">
+                        <Button onClick={() => navigate(`/posts/${id}/edit`)} size="small">
                             Edit
                         </Button>
                     </div>
@@ -85,7 +92,7 @@ const PostDetail = () => {
             </div>
             <hr></hr>
             <div>
-                <CommentsBottomNavigation postId={post.id} comments={comments} />
+                <CommentsBottomNavigation postId={id} />
             </div>
         </div>
     );
