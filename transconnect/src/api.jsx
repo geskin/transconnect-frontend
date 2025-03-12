@@ -164,9 +164,10 @@ class TransconnectApi {
 
     /** Edit a post */
 
-    static async editPost(postId, post, userId) {
+    static async editPost(postId, post, username) {
+        console.debug("in api call", post);
         try {
-            let res = await this.request(`posts/${postId}`, { post, userId }, 'patch');
+            let res = await this.request(`posts/${postId}`, { post, username }, 'patch');
             return res.post;
         } catch (err) {
             console.error("error editing post", err);

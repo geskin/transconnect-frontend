@@ -22,7 +22,7 @@ export default function CommentsBottomNavigation({ postId, comments }) {
     const [value, setValue] = useState(0);
     const [showInput, setShowInput] = useState(false);
     const [newComment, setNewComment] = useState("");
-    const [commentList, setCommentList] = useState(comments || []);
+    const [commentList, setCommentList] = useState(comments);
     const ref = useRef(null);
 
     console.debug("inside commentsbottomnav", commentList);

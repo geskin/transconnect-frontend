@@ -37,6 +37,7 @@ const EditResourceForm = ({ updateResource }) => {
                     url: resource.url || "",
                     types: resource.types || []
                 });
+                //fetch types logic goes here
             } catch (err) {
                 console.error("Error fetching resource", err);
             }
@@ -54,6 +55,11 @@ const EditResourceForm = ({ updateResource }) => {
         fetchResource();
         fetchTypes();
     }, [id, currUser, navigate]);
+
+    useEffect(() => {
+        console.debug(formData);
+        console.debug(types);
+    }, [formData]);
 
     const handleChange = evt => {
         const { name, value } = evt.target;

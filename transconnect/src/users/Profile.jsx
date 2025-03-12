@@ -65,7 +65,9 @@ const Profile = ({ logout }) => {
                         </Typography>
                     )}
                     <Typography variant="caption" display="block" mt={2}>
-                        Created on: {formatDate(displayedUser?.createdAt)}
+                        <i>
+                            Created on: {formatDate(displayedUser?.createdAt)}
+                        </i>
                     </Typography>
                 </CardContent>
 
@@ -78,6 +80,7 @@ const Profile = ({ logout }) => {
                                 sx={{ mt: 2 }}
                                 component={Link}
                                 to={`/users/${username}/edit`}
+                                size="small"
                             >
                                 Edit Profile
                             </Button>
@@ -86,6 +89,7 @@ const Profile = ({ logout }) => {
                                 color="error"
                                 sx={{ mt: 2, ml: 2 }}
                                 onClick={deleteProfile}
+                                size="small"
                             >
                                 Delete Profile
                             </Button>

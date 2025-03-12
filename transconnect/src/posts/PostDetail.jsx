@@ -5,7 +5,7 @@ import TransconnectApi from "../api";
 import { formatDate } from "../utils/formatDate";
 import CommentsBottomNavigation from "../utils/bottomNav";
 import "../css/PostDetail.css";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 
 
 /** PostDetail: shows details on a particular post including all associated comments 
@@ -47,7 +47,17 @@ const PostDetail = () => {
         };
 
         fetchPost();
-    }, [currUser, id]);
+    }, [currUser, id, navigate]);
+
+    /** Delete post */
+    const handleDeletePost = async () => {
+        try {
+            await TransconnectApi.deletePost(post.id);
+            navigate("/posts");
+        } catch (err) {
+            console.error("Error deleting post", err);
+        }
+    };
 
     return (
         <div className="col-md-8 offset-md-2">
@@ -56,6 +66,22 @@ const PostDetail = () => {
                 <h3 className="mb-3">{post.title}</h3>
                 <p>{post.content}</p>
                 <small><i>Posted {formatDate(post.createdAt)}</i></small>
+                {(currUser.role === "ADMIN" || currUser.username === user.username) && (
+                    <div>
+                        <Button
+                            variant="contained"
+                            color="error"
+                            onClick={handleDeletePost}
+                            size="small"
+                        >
+                            Delete
+                        </Button>
+                        <Button onClick={() => navigate(`/posts/${post.id}/edit`)} size="small">
+                            Edit
+                        </Button>
+                    </div>
+                )}
+
             </div>
             <hr></hr>
             <div>

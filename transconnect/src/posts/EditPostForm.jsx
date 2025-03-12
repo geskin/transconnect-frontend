@@ -54,9 +54,6 @@ const EditPostForm = ({ editPost }) => {
 
         fetchPost();
         fetchTags();
-
-        console.debug("debugging post in edit post form", post);
-
     }, [id, currUser, navigate]);
 
     const handleChange = evt => {
@@ -79,8 +76,9 @@ const EditPostForm = ({ editPost }) => {
 
     const handleSubmit = async (evt) => {
         evt.preventDefault();
+        console.debug("debugging post", post.user.username);
         try {
-            await editPost(id, formData, post.userId);
+            await editPost(id, formData, post.user.username);
             navigate(`/posts/${id}`);
         } catch (err) {
             console.error("Error updating post:", err);

@@ -118,9 +118,9 @@ function App() {
     }
   }
 
-  const editPost = async (postId, post, userId) => {
+  const editPost = async (postId, post, username) => {
     try {
-      const data = await TransconnectApi.editPost(postId, post, userId);
+      const data = await TransconnectApi.editPost(postId, post, username);
       console.debug(data);
     } catch (err) {
       console.error("Error updating post", err);

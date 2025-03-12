@@ -33,12 +33,12 @@ const EditUserForm = ({ editUser }) => {
         e.preventDefault();
         try {
             if (!formData.password) {
-                window.alert("You must enter your password to save changes.");
+                window.alert("You must enter a password to save changes.");
                 return;
             } else {
                 console.debug(formData);
                 await editUser(formData);
-                navigate(`/users/${currUser.username}`);
+                navigate(`/users/${formData.username}`);
             }
         } catch (err) {
             console.error("Error updating user:", err);
@@ -58,6 +58,7 @@ const EditUserForm = ({ editUser }) => {
                             label="Username"
                             name="username"
                             value={formData.username}
+                            onChange={handleChange}
                             sx={{ mb: 2 }}
                         />
                         <TextField
