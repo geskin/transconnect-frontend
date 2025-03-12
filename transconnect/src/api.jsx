@@ -221,10 +221,11 @@ class TransconnectApi {
 
     /** Edit (patch) a comment */
 
-    static async editComment(postId, commentId, comment) {
+    static async editComment(postId, commentId, comment, username) {
         try {
-            let res = await this.request(`posts/${postId}/comments/${commentId}`, comment, "patch");
-            return res.comment;
+            let res = await this.request(`posts/${postId}/comments/${commentId}`, { comment, username }, "patch");
+            console.debug("res from api call editComment", res.updatedComment);
+            return res.updatedComment;
         } catch (err) {
             console.error("error editing comment", err);
         }

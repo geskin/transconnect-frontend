@@ -14,6 +14,8 @@ import TransconnectApi from "../api";
 import UserContext from "../UserContext";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
 import { formatDate } from "./formatDate";
 import { Link } from "react-router-dom";
 
@@ -22,10 +24,10 @@ export default function CommentsBottomNavigation({ postId }) {
     const [value, setValue] = useState(0);
     const [showInput, setShowInput] = useState(false);
     const [newComment, setNewComment] = useState("");
-    const [commentList, setCommentList] = useState({});
+    const [commentList, setCommentList] = useState([]);
+    const [editingCommentId, setEditingCommentId] = useState(null);
+    const [editedCommentText, setEditedCommentText] = useState("");
     const ref = useRef(null);
-
-
 
     useEffect(() => {
         ref.current.ownerDocument.body.scrollTop = 0;
@@ -35,14 +37,11 @@ export default function CommentsBottomNavigation({ postId }) {
         const fetchComments = async () => {
             try {
                 const comments = await TransconnectApi.getComments(postId);
-                console.debug("comments prop debugging", comments);
                 setCommentList(comments);
             } catch (err) {
-                console.error(`Error fetching comments associated with post id #${postId}`, err);
+                console.error(`Error fetching comments for post #${postId}`, err);
             }
-        }
-
-        console.debug("commentList inside commentsbottomnav", commentList);
+        };
 
         fetchComments();
     }, [postId]);
@@ -51,8 +50,6 @@ export default function CommentsBottomNavigation({ postId }) {
         if (newComment.trim() !== "") {
             try {
                 const data = await TransconnectApi.createComment(postId, newComment, currUser.id);
-                console.debug("New comment created", data);
-
                 setCommentList([...commentList, data]);
                 setNewComment("");
                 setShowInput(false);
@@ -64,13 +61,33 @@ export default function CommentsBottomNavigation({ postId }) {
 
     const handleDeleteComment = async (commentId, authorUsername) => {
         try {
-            let comment = await TransconnectApi.getComment(postId, commentId);
+            const comment = await TransconnectApi.getComment(commentId);
             await TransconnectApi.deleteComment(postId, commentId, comment, authorUsername);
-            setCommentList(commentList.filter(comment => comment.id !== commentId)); //only makes it look like a comment is deleted right now
+            setCommentList(commentList.filter(comment => comment.id !== commentId));
         } catch (err) {
             console.error("Error deleting comment", err);
         }
     };
+
+    const handleEditComment = async (commentId) => {
+        if (editedCommentText.trim() === "") return;
+
+        try {
+            const updatedContent = await TransconnectApi.editComment(postId, commentId, editedCommentText, currUser.username);
+
+            console.debug("updated content in handleEditComment", updatedContent);
+
+            setCommentList(commentList.map(comment =>
+                comment.id === commentId ? { ...comment, content: updatedContent.content } : comment
+            ));
+
+            setEditingCommentId(null);
+            setEditedCommentText("");
+        } catch (err) {
+            console.error("Error editing comment", err);
+        }
+    };
+
 
     return (
         <Box sx={{ pb: 7 }} ref={ref}>
@@ -80,7 +97,17 @@ export default function CommentsBottomNavigation({ postId }) {
                     {commentList.map(({ id, content, createdAt, author }) => (
                         <ListItemButton key={id}>
                             <ListItemText
-                                primary={content}
+                                primary={
+                                    editingCommentId === id ? (
+                                        <TextField
+                                            fullWidth
+                                            value={editedCommentText}
+                                            onChange={(e) => setEditedCommentText(e.target.value)}
+                                        />
+                                    ) : (
+                                        content
+                                    )
+                                }
                                 secondary={
                                     <>
                                         {formatDate(createdAt)} -{" "}
@@ -92,12 +119,23 @@ export default function CommentsBottomNavigation({ postId }) {
                             />
                             {(currUser.username === author?.username || currUser.role === 'ADMIN') && (
                                 <>
+                                    {editingCommentId === id ? (
+                                        <IconButton edge="end" aria-label="save" onClick={() => handleEditComment(id)}>
+                                            <SaveIcon />
+                                        </IconButton>
+                                    ) : (
+                                        <IconButton edge="end" aria-label="edit" onClick={() => {
+                                            setEditingCommentId(id);
+                                            setEditedCommentText(content);
+                                        }}>
+                                            <EditIcon />
+                                        </IconButton>
+                                    )}
                                     <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteComment(id, author.username)}>
                                         <DeleteIcon />
                                     </IconButton>
                                 </>
                             )}
-
                         </ListItemButton>
                     ))}
                 </List>

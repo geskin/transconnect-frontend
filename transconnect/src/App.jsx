@@ -127,14 +127,6 @@ function App() {
     }
   }
 
-  const addComment = async (postId, comment) => {
-    try {
-      const data = await TransconnectApi.createComment(postId, comment, currUser);
-    } catch (err) {
-      console.error("Error saving comment", err);
-    }
-  }
-
   return (
     <>
       <BrowserRouter>
