@@ -64,6 +64,7 @@ const NewPostForm = ({ createPost }) => {
 
     const gatherInput = (e) => {
         e.preventDefault();
+        console.debug("gathering input NewPostForm currUser:", currUser);
         createPost({ ...formData, userId: currUser.id });
         setFormData({ title: "", content: "", tags: [] });
         navigate("/posts");
