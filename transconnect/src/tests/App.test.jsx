@@ -64,6 +64,8 @@ describe("App Component", () => {
     it("fetches additional user data when currUser is set", async () => {
         const setCurrUserMock = vi.fn();
 
+        TransconnectApi.getUser.mockResolvedValue({ email: "test@example.com" });
+
         await act(async () => {
             render(
                 <UserContext.Provider value={{ currUser: { username: "testuser" }, setCurrUser: setCurrUserMock }}>
@@ -74,7 +76,23 @@ describe("App Component", () => {
 
         await waitFor(() => {
             expect(TransconnectApi.getUser).toHaveBeenCalledWith("testuser");
-            expect(setCurrUserMock).toHaveBeenCalledWith(expect.objectContaining({ email: "test@example.com" }));
         });
+
+        expect(setCurrUserMock).toHaveBeenCalledTimes(2);
+
+        expect(setCurrUserMock).toHaveBeenNthCalledWith(1, expect.objectContaining({
+            username: "testuser",
+            role: "USER"
+        }));
+
+        const callback = setCurrUserMock.mock.calls[1][0];
+        expect(typeof callback).toBe("function");
+
+        const updatedUser = callback({ username: "testuser", role: "USER" });
+        expect(updatedUser).toEqual(expect.objectContaining({
+            username: "testuser",
+            email: "test@example.com",
+            role: "USER"
+        }));
     });
 });

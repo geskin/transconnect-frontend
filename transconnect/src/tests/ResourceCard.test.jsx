@@ -61,10 +61,10 @@ describe("ResourceCard", () => {
             </MemoryRouter>
         );
 
-        expect(screen.getByText("Test Resource")).toBeInTheDocument();
-        expect(screen.getByText("This is a test resource.")).toBeInTheDocument();
-        expect(screen.getByText("Type1")).toBeInTheDocument();
-        expect(screen.getByText("Type2")).toBeInTheDocument();
+        expect(screen.getByText("Test Resource")).to.exist;
+        expect(screen.getByText("This is a test resource.")).to.exist;
+        expect(screen.getByText("Type1")).to.exist;
+        expect(screen.getByText("Type2")).to.exist;
     });
 
     it("allows an admin to approve a resource", async () => {
@@ -110,7 +110,7 @@ describe("ResourceCard", () => {
             </MemoryRouter>
         );
 
-        fireEvent.click(screen.getByText("Delete"));
+        fireEvent.click(screen.getAllByText("Delete"));
 
         await waitFor(() => {
             expect(TransconnectApi.getResource).toHaveBeenCalledWith(201);

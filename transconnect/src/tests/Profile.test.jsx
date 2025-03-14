@@ -60,11 +60,12 @@ describe("Profile Component", () => {
         });
     });
 
-
     it("calls delete function on button click", async () => {
         window.confirm = vi.fn(() => true);
         TransconnectApi.deleteUser.mockResolvedValue({});
         const mockLogout = vi.fn();
+
+        const mockUser = { username: "testuser", role: "USER" };
 
         render(
             <MemoryRouter>

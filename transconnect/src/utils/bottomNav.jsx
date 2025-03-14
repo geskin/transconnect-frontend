@@ -52,7 +52,7 @@ export default function CommentsBottomNavigation({ postId }) {
         if (newComment.trim() !== "") {
             try {
                 const data = await TransconnectApi.createComment(postId, newComment, currUser.id);
-                setCommentList([...commentList, data]);
+                setCommentList([...commentList, { ...data, author: { username: currUser.username } }]);
                 setNewComment("");
                 setShowInput(false);
             } catch (err) {
@@ -114,12 +114,12 @@ export default function CommentsBottomNavigation({ postId }) {
                                     <>
                                         {formatDate(createdAt)} -{" "}
                                         <Link to={`/profile/${author?.username}`} style={{ textDecoration: 'none', color: 'black' }}>
-                                            {author?.username === currUser.username ? "You" : `@${author?.username}`}
+                                            {currUser && author?.username === currUser.username ? "You" : `@${author?.username}`}
                                         </Link>
                                     </>
                                 }
                             />
-                            {(currUser.username === author?.username || currUser.role === 'ADMIN') && (
+                            {currUser && (currUser.username === author?.username || currUser.role === 'ADMIN') && (
                                 <>
                                     {editingCommentId === id ? (
                                         <IconButton edge="end" aria-label="save" onClick={() => handleEditComment(id)}>

@@ -19,8 +19,7 @@ describe("CommentsBottomNavigation Component", () => {
     const mockUser = {
         id: 1,
         username: "testuser",
-        role: "USER",
-        basename: "/home" // Include the 'basename' property
+        role: "USER"
     };
     const mockComments = [
         { id: 1, content: "First comment", createdAt: "2024-03-14T12:00:00Z", author: { username: "testuser" } },
