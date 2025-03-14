@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, Typography, TextField, Button, Box } from "@mui/material";
 
+/** LoginForm: form for user login and handles submission */
+
 const LoginForm = ({ login }) => {
     const [formData, setFormData] = useState({
         username: "",

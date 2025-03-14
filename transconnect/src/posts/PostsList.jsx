@@ -43,17 +43,15 @@ const PostsList = () => {
         fetchTags();
     }, [currUser]);
 
-    /** Delete a post */
     const handleDeletePost = async (postId) => {
         try {
             await TransconnectApi.deletePost(postId);
-            setPosts(posts.filter(post => post.id !== postId)); // Update UI immediately
+            setPosts(posts.filter(post => post.id !== postId)); // Update state for UI
         } catch (err) {
             console.error("Error deleting post", err);
         }
     };
 
-    /** Handle tag filtering */
     const handleTagClick = async (e) => {
         e.preventDefault();
         const tag = e.target.value;
@@ -68,12 +66,10 @@ const PostsList = () => {
         }
     };
 
-    /** Handle search input change */
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
 
-    /** Handle search submit */
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -115,7 +111,7 @@ const PostsList = () => {
 
             {/* Post Cards */}
             <div>
-                {posts.length > 0 ? (
+                {Array.isArray(posts) && posts.length > 0 ? (
                     posts.map((p) => (
                         <PostCard
                             key={p.id}
@@ -135,7 +131,6 @@ const PostsList = () => {
                 )}
             </div>
 
-            {/* Create New Post Button */}
             <Box sx={{ textAlign: "center", mt: 2 }}>
                 <Button variant="contained" component={Link} to="/posts/new">
                     Say Something

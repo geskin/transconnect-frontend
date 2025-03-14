@@ -1,0 +1,92 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`App Component > matches snapshot 1`] = `
+<DocumentFragment>
+  <header
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-lhkrlz-MuiPaper-root-MuiAppBar-root"
+    style="--Paper-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12);"
+  >
+    <div
+      class="MuiToolbar-root MuiToolbar-gutters MuiToolbar-regular css-dr5mlu-MuiToolbar-root"
+    >
+      <h6
+        class="MuiTypography-root MuiTypography-h6 MuiTypography-noWrap css-1x41qo0-MuiTypography-root"
+      >
+        TransConnect
+      </h6>
+      <div
+        class="MuiBox-root css-1hq76n0"
+      >
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-8chbys-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
+        >
+          Resources
+        </button>
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-8chbys-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
+        >
+          Bathrooms
+        </button>
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-8chbys-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
+        >
+          Login
+        </button>
+        <button
+          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-8chbys-MuiButtonBase-root-MuiButton-root"
+          tabindex="0"
+          type="button"
+        >
+          Signup
+        </button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <div
+      class="Homepage"
+    >
+      <div
+        class="container text-center"
+      >
+        <h1
+          class="mb-4 fw-bold"
+        >
+          TransConnect
+        </h1>
+        <p
+          class="lead"
+        >
+          Connection with a cause.
+        </p>
+        <p>
+          <button>
+            <a
+              class="btn btn-primary fw-bold me-3"
+              data-discover="true"
+              href="/login"
+            >
+              Log in
+            </a>
+          </button>
+          <button>
+            <a
+              class="btn btn-primary fw-bold me-3"
+              data-discover="true"
+              href="/register"
+            >
+              Sign up
+            </a>
+          </button>
+        </p>
+      </div>
+    </div>
+  </main>
+</DocumentFragment>
+`;

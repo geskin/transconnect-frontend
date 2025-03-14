@@ -54,22 +54,18 @@ const ResourceDetail = () => {
     return (
         <Card className="Card card" sx={{ minHeight: 400, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <CardContent className="card-body">
-                {/* Admin-only approval status */}
                 {currUser?.role === "ADMIN" && (
                     <p className="text-start" style={{ color: resource.approved ? "green" : "red", fontWeight: "bold" }}>
                         {resource.approved ? "Approved" : "Pending Approval"}
                     </p>
                 )}
 
-                {/* Resource Name */}
                 <h2 className="card-title text-start">
                     {resource.url ? <Link to={resource.url}><b>{resource.name}</b></Link> : <b>{resource.name}</b>}
                 </h2>
 
-                {/* Description */}
                 <p className="text-start"><i>{resource.description}</i></p>
 
-                {/* Resource Types */}
                 <div>
                     {resource.types.map(t => (
                         <Button variant="outlined" disabled key={t.name}>
@@ -79,7 +75,6 @@ const ResourceDetail = () => {
                 </div>
             </CardContent>
 
-            {/* Buttons */}
             <CardActions sx={{ padding: "16px", display: "flex", justifyContent: "flex-start" }}>
                 <Button onClick={() => navigate("/resources")} size="small">Back to Resources</Button>
 

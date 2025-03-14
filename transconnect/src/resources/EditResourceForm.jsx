@@ -45,17 +45,7 @@ const EditResourceForm = ({ updateResource }) => {
             }
         };
 
-        // const fetchTypes = async () => {
-        //     try {
-        //         const data = await TransconnectApi.getTypes();
-        //         setTypes(data.map(t => t.name));
-        //     } catch (err) {
-        //         console.error("Error fetching resource types", err);
-        //     }
-        // };
-
         fetchResource();
-        // fetchTypes();
     }, [id, currUser, navigate]);
 
     useEffect(() => {

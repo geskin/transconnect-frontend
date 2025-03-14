@@ -1,9 +1,8 @@
 import React from "react";
-import { render, screen, act } from "@testing-library/react";
+import { render, screen, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import App from "../App";
 import UserContext from "../UserContext";
-import { BrowserRouter } from "react-router-dom";
 import TransconnectApi from "../api";
 import { useLocalStorage } from "../hooks";
 import { jwtDecode } from "jwt-decode";
@@ -13,7 +12,7 @@ vi.mock("../hooks", () => ({
     useLocalStorage: vi.fn(),
 }));
 vi.mock("jwt-decode", () => ({
-    jwtDecode: vi.fn(),
+    jwtDecode: vi.fn(() => ({ username: "testuser", role: "USER" })),
 }));
 
 beforeEach(() => {
@@ -73,7 +72,9 @@ describe("App Component", () => {
             );
         });
 
-        expect(TransconnectApi.getUser).toHaveBeenCalledWith("testuser");
-        expect(setCurrUserMock).toHaveBeenCalledWith(expect.objectContaining({ email: "test@example.com" }));
+        await waitFor(() => {
+            expect(TransconnectApi.getUser).toHaveBeenCalledWith("testuser");
+            expect(setCurrUserMock).toHaveBeenCalledWith(expect.objectContaining({ email: "test@example.com" }));
+        });
     });
 });

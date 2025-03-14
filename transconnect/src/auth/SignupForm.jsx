@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, Typography, TextField, Button, Box } from "@mui/material";
 
+/** SignupForm: form for registering a new user and handles submission */
+
 const SignupForm = ({ signup }) => {
     const [formData, setFormData] = useState({
         username: "",

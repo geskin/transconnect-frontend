@@ -47,7 +47,6 @@ const PostDetail = () => {
         fetchPost();
     }, [currUser, id, navigate]);
 
-    /** Delete post */
     const handleDeletePost = async () => {
         try {
             await TransconnectApi.deletePost(id);

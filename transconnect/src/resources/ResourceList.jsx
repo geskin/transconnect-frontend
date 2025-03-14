@@ -7,6 +7,11 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 
+/** ResourceList: displays list of resources in card form
+ * 
+ * Admin have additional functionality; regular users can only add resources and see approved ones
+ */
+
 const ResourceList = () => {
     const [resources, setResources] = useState([]);
     const [types, setTypes] = useState([]);

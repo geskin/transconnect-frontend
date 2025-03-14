@@ -26,15 +26,14 @@ function App() {
 
     let payload = jwtDecode(token);
     console.debug(payload);
-    const { username, role } = payload; // Extract username and role from the token
+    const { username, role } = payload;
 
     // Set the current user with username and role
     setCurrUser({ username, role });
   }, [token]);
 
-  // Fetch additional user details on current user only after currUser is set
   useEffect(() => {
-    if (!currUser || !currUser.username) return; // Wait until currUser is fully initialized
+    if (!currUser || !currUser.username) return;
 
     const fetchUser = async () => {
       try {

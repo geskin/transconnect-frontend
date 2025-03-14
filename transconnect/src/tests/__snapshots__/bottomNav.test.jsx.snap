@@ -1,0 +1,46 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CommentsBottomNavigation Component > matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="MuiBox-root css-1nl0624"
+  >
+    <ul
+      class="MuiList-root MuiList-padding css-b7dj7n-MuiList-root"
+    >
+      No comments yet!
+    </ul>
+    <div
+      class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation3 css-1ebsret-MuiPaper-root"
+      style="--Paper-shadow: 0px 3px 3px -2px rgba(0,0,0,0.2),0px 3px 4px 0px rgba(0,0,0,0.14),0px 1px 8px 0px rgba(0,0,0,0.12);"
+    >
+      <div
+        class="MuiBottomNavigation-root css-7ax0nd-MuiBottomNavigation-root"
+      >
+        <button
+          class="MuiButtonBase-root MuiBottomNavigationAction-root Mui-selected css-1scjuq2-MuiButtonBase-root-MuiBottomNavigationAction-root"
+          tabindex="0"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="AddCommentIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4zM17 11h-4v4h-2v-4H7V9h4V5h2v4h4z"
+            />
+          </svg>
+          <span
+            class="MuiBottomNavigationAction-label Mui-selected css-1kcvi62-MuiBottomNavigationAction-label"
+          >
+            Comment
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

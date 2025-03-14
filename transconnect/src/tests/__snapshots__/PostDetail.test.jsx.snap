@@ -1,0 +1,39 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`PostDetail > matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="col-md-8 offset-md-2"
+  >
+    <div
+      class="post-details"
+    >
+      <h4>
+        <a
+          data-discover="true"
+          href="/users/undefined"
+        >
+          @
+        </a>
+      </h4>
+      <h3
+        class="mb-3"
+      />
+      <p />
+      <small>
+        <i>
+          Posted Invalid date
+        </i>
+      </small>
+    </div>
+    <hr />
+    <div>
+      <div
+        data-testid="comments-nav"
+      >
+        CommentsNavigation
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

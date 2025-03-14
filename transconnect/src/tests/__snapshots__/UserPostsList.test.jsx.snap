@@ -1,0 +1,29 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`UserPostsList > matches snapshot 1`] = `
+<DocumentFragment>
+  <div>
+    <div>
+      <p
+        class="lead white-letters"
+      >
+        Sorry, no results were found!
+      </p>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`UserPostsListc component > matches snapshot 1`] = `
+<DocumentFragment>
+  <div>
+    <div>
+      <p
+        class="lead white-letters"
+      >
+        Sorry, no results were found!
+      </p>
+    </div>
+  </div>
+</DocumentFragment>
+`;

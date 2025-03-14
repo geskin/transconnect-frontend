@@ -19,6 +19,8 @@ import SaveIcon from '@mui/icons-material/Save';
 import { formatDate } from "./formatDate";
 import { Link } from "react-router-dom";
 
+/** CommentsBottomNavigation: allows user to add, edit, or delete comments on a particular post */
+
 export default function CommentsBottomNavigation({ postId }) {
     const { currUser } = useContext(UserContext);
     const [value, setValue] = useState(0);
@@ -92,7 +94,7 @@ export default function CommentsBottomNavigation({ postId }) {
     return (
         <Box sx={{ pb: 7 }} ref={ref}>
             <CssBaseline />
-            {commentList.length > 0 ? (
+            {Array.isArray(commentList) && commentList.length > 0 ? (
                 <List>
                     {commentList.map(({ id, content, createdAt, author }) => (
                         <ListItemButton key={id}>

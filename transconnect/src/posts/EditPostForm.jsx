@@ -46,17 +46,7 @@ const EditPostForm = ({ editPost }) => {
             }
         };
 
-        // const fetchTags = async () => {
-        //     try {
-        //         const data = await TransconnectApi.getTags();
-        //         setTags(data.map(t => t.name));
-        //     } catch (err) {
-        //         console.error("Error fetching tags", err);
-        //     }
-        // };
-
         fetchPost();
-        // fetchTags();
     }, [id, currUser, navigate]);
 
     const handleChange = evt => {

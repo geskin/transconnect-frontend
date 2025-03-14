@@ -5,6 +5,8 @@ import UserContext from "../UserContext";
 import TransconnectApi from "../api";
 import { formatDate } from "../utils/formatDate";
 
+/** Profile: displays a users profile */
+
 const Profile = ({ logout }) => {
     const { username } = useParams();
     const { currUser } = useContext(UserContext);
