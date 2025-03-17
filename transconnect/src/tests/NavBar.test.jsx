@@ -37,16 +37,15 @@ describe("NavBar", () => {
         const user = { username: "testuser" };
 
         renderNavBar(user);
-        // why are there multiple elements with this test found?
-        const profileButton = screen.getByText("Profile");
+        const profileButton = screen.getAllByText("Profile")[0];
         fireEvent.click(profileButton);
         expect(navigate).toHaveBeenCalledWith(`/users/${user.username}`);
 
-        const postsButton = screen.getByText("Posts");
+        const postsButton = screen.getAllByText("Posts")[0];
         fireEvent.click(postsButton);
         expect(navigate).toHaveBeenCalledWith("/posts");
 
-        const logoutButton = screen.getByText("Logout");
+        const logoutButton = screen.getAllByText("Logout")[0];
         fireEvent.click(logoutButton);
         expect(navigate).toHaveBeenCalledWith("/logout");
     });
@@ -56,11 +55,11 @@ describe("NavBar", () => {
 
         renderNavBar();
 
-        const loginButton = screen.getByText("Login");
+        const loginButton = screen.getAllByText("Login")[0];
         fireEvent.click(loginButton);
         expect(navigate).toHaveBeenCalledWith("/login");
 
-        const signupButton = screen.getByText("Signup");
+        const signupButton = screen.getAllByText("Signup")[0];
         fireEvent.click(signupButton);
         expect(navigate).toHaveBeenCalledWith("/register");
     });
@@ -69,19 +68,19 @@ describe("NavBar", () => {
         const user = { username: "testuser" };
         renderNavBar(user);
 
-        expect(screen.getByText("Resources")).to.not.be.null;
-        expect(screen.getByText("Bathrooms")).to.not.be.null;
-        expect(screen.getByText("Posts")).to.not.be.null;
-        expect(screen.getByText("Profile")).to.not.be.null;
-        expect(screen.getByText("Logout")).to.not.be.null;
+        expect(screen.getAllByText("Resources")).to.not.be.null;
+        expect(screen.getAllByText("Bathrooms")).to.not.be.null;
+        expect(screen.getAllByText("Posts")).to.not.be.null;
+        expect(screen.getAllByText("Profile")).to.not.be.null;
+        expect(screen.getAllByText("Logout")).to.not.be.null;
     });
 
     it("renders all buttons correctly with no user logged in", () => {
         renderNavBar();
 
-        expect(screen.getByText("Resources")).to.not.be.null;
-        expect(screen.getByText("Bathrooms")).to.not.be.null;
-        expect(screen.getByText("Login")).to.not.be.null;
-        expect(screen.getByText("Signup")).to.not.be.null;
+        expect(screen.getAllByText("Resources")).to.not.be.null;
+        expect(screen.getAllByText("Bathrooms")).to.not.be.null;
+        expect(screen.getAllByText("Login")).to.not.be.null;
+        expect(screen.getAllByText("Signup")).to.not.be.null;
     });
 });

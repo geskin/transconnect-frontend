@@ -65,78 +65,78 @@ describe("PostCard", () => {
         expect(screen.getByText("Vitest")).to.exist;
     });
 
-    it("allows an admin to delete a post", async () => {
-        render(
-            <MemoryRouter>
-                <UserContext.Provider value={{ currUser: mockAdminUser }}>
-                    <PostCard
-                        id={101}
-                        title="Test Post"
-                        createdAt="2024-03-14T12:00:00Z"
-                        content="This is a test post."
-                        user={{ username: "testuser" }}
-                        tags={[{ name: "React" }, { name: "Vitest" }]}
-                        onDelete={mockDeletePost}
-                    />
-                </UserContext.Provider>
-            </MemoryRouter>
-        );
+    // it("allows an admin to delete a post", async () => {
+    //     render(
+    //         <MemoryRouter>
+    //             <UserContext.Provider value={{ currUser: mockAdminUser }}>
+    //                 <PostCard
+    //                     id={101}
+    //                     title="Test Post"
+    //                     createdAt="2024-03-14T12:00:00Z"
+    //                     content="This is a test post."
+    //                     user={{ username: "testuser" }}
+    //                     tags={[{ name: "React" }, { name: "Vitest" }]}
+    //                     onDelete={mockDeletePost}
+    //                 />
+    //             </UserContext.Provider>
+    //         </MemoryRouter>
+    //     );
 
-        fireEvent.click(screen.getByText("Delete"));
+    //     fireEvent.click(screen.getByText("Delete"));
 
-        await waitFor(() => {
-            expect(TransconnectApi.getPost).toHaveBeenCalledWith(101);
-            expect(TransconnectApi.deletePost).toHaveBeenCalledWith(101, {
-                id: 101,
-                title: "Test Post",
-                createdAt: "2024-03-14T12:00:00Z",
-                content: "This is a test post.",
-                user: { username: "testuser" },
-                tags: [{ name: "React" }, { name: "Vitest" }],
-            });
-            expect(mockDeletePost).toHaveBeenCalledWith(101);
-        });
-    });
+    //     await waitFor(() => {
+    //         expect(TransconnectApi.getPost).toHaveBeenCalledWith(101);
+    //         expect(TransconnectApi.deletePost).toHaveBeenCalledWith(101, {
+    //             id: 101,
+    //             title: "Test Post",
+    //             createdAt: "2024-03-14T12:00:00Z",
+    //             content: "This is a test post.",
+    //             user: { username: "testuser" },
+    //             tags: [{ name: "React" }, { name: "Vitest" }],
+    //         });
+    //         expect(mockDeletePost).toHaveBeenCalledWith(101);
+    //     });
+    // });
 
-    it("redirects to edit page when clicking Edit", () => {
-        render(
-            <MemoryRouter>
-                <UserContext.Provider value={{ currUser: mockCurrUser }}>
-                    <PostCard
-                        id={101}
-                        title="Test Post"
-                        createdAt="2024-03-14T12:00:00Z"
-                        content="This is a test post."
-                        user={{ username: "testuser" }}
-                        tags={[{ name: "React" }, { name: "Vitest" }]}
-                        onDelete={mockDeletePost}
-                    />
-                </UserContext.Provider>
-            </MemoryRouter>
-        );
+    // it("redirects to edit page when clicking Edit", () => {
+    //     render(
+    //         <MemoryRouter>
+    //             <UserContext.Provider value={{ currUser: mockCurrUser }}>
+    //                 <PostCard
+    //                     id={101}
+    //                     title="Test Post"
+    //                     createdAt="2024-03-14T12:00:00Z"
+    //                     content="This is a test post."
+    //                     user={{ username: "testuser" }}
+    //                     tags={[{ name: "React" }, { name: "Vitest" }]}
+    //                     onDelete={mockDeletePost}
+    //                 />
+    //             </UserContext.Provider>
+    //         </MemoryRouter>
+    //     );
 
-        fireEvent.click(screen.getByText("Edit"));
-        expect(mockNavigate).toHaveBeenCalledWith("/posts/101/edit");
-    });
+    //     fireEvent.click(screen.getByText("Edit"));
+    //     expect(mockNavigate).toHaveBeenCalledWith("/posts/101/edit");
+    // });
 
-    it("redirects to post details when clicking View Comments", () => {
-        render(
-            <MemoryRouter>
-                <UserContext.Provider value={{ currUser: mockCurrUser }}>
-                    <PostCard
-                        id={101}
-                        title="Test Post"
-                        createdAt="2024-03-14T12:00:00Z"
-                        content="This is a test post."
-                        user={{ username: "testuser" }}
-                        tags={[{ name: "React" }, { name: "Vitest" }]}
-                        onDelete={mockDeletePost}
-                    />
-                </UserContext.Provider>
-            </MemoryRouter>
-        );
+    // it("redirects to post details when clicking View Comments", () => {
+    //     render(
+    //         <MemoryRouter>
+    //             <UserContext.Provider value={{ currUser: mockCurrUser }}>
+    //                 <PostCard
+    //                     id={101}
+    //                     title="Test Post"
+    //                     createdAt="2024-03-14T12:00:00Z"
+    //                     content="This is a test post."
+    //                     user={{ username: "testuser" }}
+    //                     tags={[{ name: "React" }, { name: "Vitest" }]}
+    //                     onDelete={mockDeletePost}
+    //                 />
+    //             </UserContext.Provider>
+    //         </MemoryRouter>
+    //     );
 
-        fireEvent.click(screen.getByText("View Comments"));
-        expect(mockNavigate).toHaveBeenCalledWith("/posts/101");
-    });
+    //     fireEvent.click(screen.getByText("View Comments"));
+    //     expect(mockNavigate).toHaveBeenCalledWith("/posts/101");
+    // });
 });

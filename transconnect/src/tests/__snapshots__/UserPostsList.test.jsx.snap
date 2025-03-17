@@ -14,6 +14,20 @@ exports[`UserPostsList > matches snapshot 1`] = `
 </DocumentFragment>
 `;
 
+exports[`UserPostsList component > matches snapshot 1`] = `
+<DocumentFragment>
+  <div>
+    <div>
+      <p
+        class="lead white-letters"
+      >
+        Sorry, no results were found!
+      </p>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
 exports[`UserPostsListc component > matches snapshot 1`] = `
 <DocumentFragment>
   <div>
