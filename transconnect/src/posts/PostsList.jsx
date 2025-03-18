@@ -41,7 +41,7 @@ const PostsList = () => {
 
         fetchPosts();
         fetchTags();
-    }, [currUser]);
+    }, [currUser, posts?.length]);
 
     const handleDeletePost = async (postId) => {
         try {
