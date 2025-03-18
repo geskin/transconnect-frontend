@@ -118,12 +118,11 @@ class TransconnectApi {
      * optionally filter by tag
      */
 
-    static async getPosts(tags = [], searchTerm = "") {
+    static async getPosts(searchTerm = "", tag = "") {
         try {
             const queryParams = {};
-
-            if (tags.length > 0) queryParams.tag = tags[0]; //pass only first tag since expects a string
-            if (searchTerm) queryParams.search = searchTerm;
+            if (searchTerm) queryParams.searchTerm = searchTerm;
+            if (tag) queryParams.tag = tag;
 
             let res = await this.request('posts', queryParams);
             return res.posts;

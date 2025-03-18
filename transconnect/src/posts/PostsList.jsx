@@ -56,10 +56,10 @@ const PostsList = () => {
         e.preventDefault();
         const tag = e.target.value;
 
-        setSearchTag(tag); // Update state for UI
+        setSearchTag(tag);
 
         try {
-            const data = await TransconnectApi.getPosts(tag ? [tag] : []);
+            const data = await TransconnectApi.getPosts("", tag);
             setPosts(data);
         } catch (err) {
             console.error("Error fetching posts", err);
