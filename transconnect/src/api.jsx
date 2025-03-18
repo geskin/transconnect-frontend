@@ -13,7 +13,7 @@ const BASE_URL = process.env.VITE_BASE_URL || "http://localhost:3001";
 
 class TransconnectApi {
     // the token for interactive with the API will be stored here.
-    static token;
+    static token = null;
 
     static async request(endpoint, data = {}, method = "get") {
         // console.debug("API Call:", endpoint, data, method);
@@ -21,7 +21,7 @@ class TransconnectApi {
         //there are multiple ways to pass an authorization token, this is how you pass it in the header.
         //this has been provided to show you another way to pass the token. you are only expected to read this code for this project.
         const url = `${BASE_URL}/${endpoint}`;
-        const headers = { Authorization: `Bearer ${TransconnectApi.token}` };
+        const headers = TransconnectApi.token ? { Authorization: `Bearer ${TransconnectApi.token}` } : {};
         const params = (method === "get")
             ? data
             : {};
@@ -33,6 +33,10 @@ class TransconnectApi {
             let message = err.response.data.error.message;
             throw Array.isArray(message) ? message : [message];
         }
+    }
+
+    static setToken(newToken) {
+        TransconnectApi.token = newToken;
     }
 
     /** Individual API routes */
@@ -271,26 +275,27 @@ class TransconnectApi {
         }
     }
 
-    /** Register a user (signup) */
-
-    static async register(user) {
-        try {
-            let res = await this.request('auth/register', user, 'post');
-            return res.token;
-        } catch (err) {
-            console.error("error creating user", err);
-        }
-    }
-
     /** Authenticate a user (login) */
-
     static async authenticate(username, password) {
         try {
             let res = await this.request('auth/token', { username, password }, 'post');
             if (res.error) throw new Error("Invalid credentials");
+
+            TransconnectApi.setToken(res.token);
             return res.token;
         } catch (err) {
-            console.error("error loging user in (error creating token)", err);
+            console.error("Error logging in", err);
+        }
+    }
+
+    /** Register a user (signup) */
+    static async register(user) {
+        try {
+            let res = await this.request('auth/register', user, 'post');
+            TransconnectApi.setToken(res.token);
+            return res.token;
+        } catch (err) {
+            console.error("Error creating user", err);
         }
     }
 
@@ -341,8 +346,8 @@ class TransconnectApi {
 
 }
 
-TransconnectApi.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
-    "SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
-    "FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc";
+// TransconnectApi.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
+//     "SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
+//     "FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc";
 
 export default TransconnectApi;
