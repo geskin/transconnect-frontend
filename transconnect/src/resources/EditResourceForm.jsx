@@ -48,11 +48,11 @@ const EditResourceForm = ({ updateResource }) => {
         fetchResource();
     }, [id, currUser, navigate]);
 
-    useEffect(() => {
-        console.debug("Form data", formData);
-        console.debug("FormData types", formData.types);
-        console.debug("Types from api call", types);
-    }, [formData]);
+    // useEffect(() => {
+    //     console.debug("Form data", formData);
+    //     console.debug("FormData types", formData.types);
+    //     console.debug("Types from api call", types);
+    // }, [formData]);
 
     const handleChange = evt => {
         const { name, value } = evt.target;
@@ -64,13 +64,11 @@ const EditResourceForm = ({ updateResource }) => {
 
     const handleCheckbox = e => {
         const value = e.target.value;
-        console.debug("formData before handlingcheckbox", formData.types);
         setFormData(fData => ({
             types: fData.types.includes(value)
                 ? fData.types.filter(t => t !== value)
                 : [...fData.types, value]
         }));
-        console.debug("formData after handlingcheckbox", formData.types);
     };
 
     const handleSubmit = async (evt) => {

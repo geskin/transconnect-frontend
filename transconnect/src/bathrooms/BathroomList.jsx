@@ -19,7 +19,6 @@ const BathroomList = () => {
             try {
                 let data = await TransconnectApi.getBathrooms(location, accessibility);
                 setBathrooms(data);
-                console.debug("bathrooms data", data);
             } catch (err) {
                 console.error("Error fetching bathrooms", err);
             }
@@ -32,8 +31,6 @@ const BathroomList = () => {
         const newChecked = e.target.checked;
         setChecked(newChecked);
         setAccessibility(newChecked);
-
-        console.debug("Accessibility:", newChecked);
     };
 
     return (

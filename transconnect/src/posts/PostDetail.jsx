@@ -15,7 +15,6 @@ import { Button, Typography } from "@mui/material";
 
 const PostDetail = () => {
     const { id } = useParams();
-    console.debug(id);
     const [post, setPost] = useState({ tags: [] });
     const [user, setUser] = useState({});
     const { currUser } = useContext(UserContext);
@@ -24,8 +23,6 @@ const PostDetail = () => {
     if (!currUser) return <Typography>Loading...</Typography>;
 
     useEffect(() => {
-        console.debug(currUser);
-
         if (!currUser) {
             navigate("/posts");
             return;
@@ -34,7 +31,6 @@ const PostDetail = () => {
         const fetchPost = async () => {
             try {
                 const post = await TransconnectApi.getPost(id);
-                console.debug(post);
                 if (post) {
                     setPost(post);
                     setUser(post.user);

@@ -25,7 +25,6 @@ function App() {
     }
 
     let payload = jwtDecode(token);
-    console.debug(payload);
     const { username, role } = payload;
 
     // Set the current user with username and role
@@ -48,7 +47,6 @@ function App() {
     };
 
     fetchUser();
-    console.debug(currUser);
   }, [currUser?.username]);
 
   const login = async (username, password) => {
@@ -93,7 +91,6 @@ function App() {
   const createPost = async (post) => { //make this generalizable for posts and resources
     try {
       const data = await TransconnectApi.createPost(post);
-      console.debug(data);
     } catch (err) {
       console.error("Error creating post", err);
     }
@@ -102,7 +99,6 @@ function App() {
   const submitResource = async (resource) => {
     try {
       const data = await TransconnectApi.submitResource(resource);
-      console.debug(data);
     } catch (err) {
       console.error("Error submitting resource", err);
     }
@@ -111,7 +107,6 @@ function App() {
   const updateResource = async (resourceId, resource) => {
     try {
       const data = await TransconnectApi.patchResource(resourceId, resource);
-      console.debug(data);
     } catch (err) {
       console.error("Error updating resource", err);
     }
@@ -120,7 +115,6 @@ function App() {
   const editPost = async (postId, post, username) => {
     try {
       const data = await TransconnectApi.editPost(postId, post, username);
-      console.debug(data);
     } catch (err) {
       console.error("Error updating post", err);
     }

@@ -14,7 +14,6 @@ import "./css/Homepage.css";
 
 function Homepage() {
     const { currUser } = useContext(UserContext);
-    console.debug("Homepage", "currUser=", currUser);
 
     return (
         <div className="Homepage">

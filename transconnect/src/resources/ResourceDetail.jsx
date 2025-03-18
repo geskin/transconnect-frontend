@@ -21,7 +21,6 @@ const ResourceDetail = () => {
         const fetchResource = async () => {
             try {
                 const fetchedResource = await TransconnectApi.getResource(id);
-                console.debug("Fetched resource", fetchedResource);
                 setResource(fetchedResource);
             } catch (err) {
                 console.error("Error fetching resource", err);

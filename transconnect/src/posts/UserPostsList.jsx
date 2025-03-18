@@ -21,7 +21,6 @@ const UserPostsList = () => {
         const fetchUser = async () => {
             try {
                 let user = await TransconnectApi.getUser(username);
-                console.debug(user);
                 setUser(user)
             } catch (err) {
                 console.error(`Error fetching user: ${username}`, err);
@@ -31,7 +30,6 @@ const UserPostsList = () => {
         const fetchUserPosts = async () => {
             try {
                 let userPosts = await TransconnectApi.getUserPosts(user.id);
-                console.debug(userPosts);
                 setPosts(userPosts);
             } catch (err) {
                 console.error(`Error fetching ${username}'s posts`, err);

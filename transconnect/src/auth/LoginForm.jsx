@@ -25,7 +25,6 @@ const LoginForm = ({ login }) => {
         setError("");
         try {
             const success = await login(formData.username, formData.password);
-            console.debug("success", success);
             if (success) {
                 navigate("/");
             } else {

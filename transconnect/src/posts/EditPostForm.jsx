@@ -23,8 +23,6 @@ const EditPostForm = ({ editPost }) => {
     if (!currUser) return <Typography>Loading...</Typography>;
 
     useEffect(() => {
-        console.debug("EditPostForm currUser debugging", currUser);
-
         const fetchPost = async () => {
             try {
                 const post = await TransconnectApi.getPost(id);
@@ -59,19 +57,16 @@ const EditPostForm = ({ editPost }) => {
 
     const handleCheckbox = evt => {
         const value = evt.target.value;
-        console.debug("formData before handlingcheckbox", formData.tags);
         setFormData(fData => ({
             ...fData,
             tags: fData.tags.includes(value)
                 ? fData.tags.filter(t => t !== value)
                 : [...fData.tags, value]
         }));
-        console.debug("formData after handlingcheckbox", formData.tags);
     };
 
     const handleSubmit = async (evt) => {
         evt.preventDefault();
-        console.debug("debugging post", post.user.username);
         try {
             await editPost(id, formData, post.user.username);
             navigate(`/posts/${id}`);

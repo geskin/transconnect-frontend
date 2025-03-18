@@ -1,7 +1,7 @@
 import axios from "axios";
 import process from "process";
 
-const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
+const BASE_URL = process.env.VITE_BASE_URL || "http://localhost:3001";
 
 /** API Class.
  *
@@ -102,7 +102,6 @@ class TransconnectApi {
     static async deleteResource(id, resource) {
         try {
             let res = await this.request(`resources/${id}`, resource, 'delete');
-            console.debug(`deleted: ${res.deleted}`);
             return res.deleted;
         } catch (err) {
             console.error("error deleting resource", err);
@@ -165,7 +164,6 @@ class TransconnectApi {
     /** Edit a post */
 
     static async editPost(postId, post, username) {
-        console.debug("in api call", post);
         try {
             let res = await this.request(`posts/${postId}`, { post, username }, 'patch');
             return res.post;
@@ -177,7 +175,6 @@ class TransconnectApi {
     static async deletePost(id, post) {
         try {
             let res = await this.request(`posts/${id}`, post, 'delete');
-            console.debug(`deleted: ${res.deleted}`);
             return res.deleted;
         } catch (err) {
             console.error("error deleting resource", err);
@@ -224,7 +221,6 @@ class TransconnectApi {
     static async editComment(postId, commentId, comment, username) {
         try {
             let res = await this.request(`posts/${postId}/comments/${commentId}`, { comment, username }, "patch");
-            console.debug("res from api call editComment", res.updatedComment);
             return res.updatedComment;
         } catch (err) {
             console.error("error editing comment", err);
@@ -312,7 +308,6 @@ class TransconnectApi {
     static async deleteUser(username, user) {
         try {
             let res = await this.request(`users/${username}`, user, "delete");
-            console.debug(`deleted: ${res.deleted}`);
             return res.deleted;
         } catch (err) {
             console.error("error deleting user", err);

@@ -77,8 +77,6 @@ export default function CommentsBottomNavigation({ postId }) {
         try {
             const updatedContent = await TransconnectApi.editComment(postId, commentId, editedCommentText, currUser.username);
 
-            console.debug("updated content in handleEditComment", updatedContent);
-
             setCommentList(commentList.map(comment =>
                 comment.id === commentId ? { ...comment, content: updatedContent.content } : comment
             ));

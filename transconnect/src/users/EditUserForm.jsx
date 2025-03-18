@@ -36,7 +36,6 @@ const EditUserForm = ({ editUser }) => {
                 window.alert("You must enter a password to save changes.");
                 return;
             } else {
-                console.debug(formData);
                 await editUser(formData);
                 navigate(`/users/${formData.username}`);
             }
