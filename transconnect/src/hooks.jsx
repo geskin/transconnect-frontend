@@ -5,7 +5,18 @@ const useLocalStorage = (defaultVal, key) => {
         if (typeof window === 'undefined' || !window.localStorage) return defaultVal;
 
         const persistedVal = window.localStorage.getItem(key);
-        return persistedVal !== null ? JSON.parse(persistedVal) : defaultVal;
+        // return persistedVal !== null ? JSON.parse(persistedVal) : defaultVal;
+
+        if (!persistedVal || persistedVal === "undefined" || persistedVal === "null" || persistedVal === null || persistedVal === undefined) {
+            return defaultVal;
+        } else {
+            try {
+                return JSON.parse(persistedVal);
+            } catch (error) {
+                console.error("Error parsing value:", error);
+                return defaultVal;
+            }
+        }
     });
 
     useEffect(() => {
