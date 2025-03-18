@@ -4,8 +4,13 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
     const [currUser, setCurrUser] = useState(() => {
-        const storedUser = localStorage.getItem("currUser");
-        return storedUser ? JSON.parse(storedUser) : null;
+        let storedUser = localStorage.getItem("currUser");
+        if (storedUser === 'undefined' || storedUser === undefined || storedUser === null || storedUser === 'null') {
+            return null;
+        } else {
+            return JSON.parse(storedUser);
+        }
+        // return storedUser ? JSON.parse(storedUser) : null;
     });
 
     // Save to localStorage whenever currUser changes
