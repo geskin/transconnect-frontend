@@ -18,7 +18,7 @@ function Homepage() {
     return (
         <div className="Homepage">
             <div className="container text-center">
-                <h1 className="mb-4 fw-bold">TransConnect</h1>
+                <h1 className="title mb-4 fw-bold">TransConnect</h1>
                 <p className="lead">Connection with a cause.</p>
                 {currUser
                     ? <h2>

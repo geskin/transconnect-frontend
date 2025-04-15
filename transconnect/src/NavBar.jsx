@@ -1,26 +1,66 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserContext from "./UserContext";
-import { AppBar, Toolbar, Typography, Box, Button } from "@mui/material";
-
-/** NavBar: Full-width navigation bar at the top of the app */
+import {
+    AppBar,
+    Toolbar,
+    Typography,
+    Box,
+    Button,
+    IconButton,
+    Menu,
+    MenuItem,
+    useMediaQuery
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import { useTheme } from "@mui/material/styles";
 
 function NavBar() {
     const { currUser } = useContext(UserContext);
     const navigate = useNavigate();
 
+    const [anchorEl, setAnchorEl] = useState(null);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+    const handleMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    const menuItems = [
+        { label: "Resources", path: "/resources" },
+        { label: "Bathrooms", path: "/bathrooms" },
+        ...(currUser
+            ? [
+                { label: "Posts", path: "/posts" },
+                { label: "Profile", path: `/users/${currUser.username}` },
+                { label: "Logout", path: "/logout" },
+            ]
+            : [
+                { label: "Login", path: "/login" },
+                { label: "Signup", path: "/register" },
+            ]),
+    ];
+
     return (
         <AppBar
             position="static"
-            sx={{ backgroundColor: "whitesmoke", boxShadow: "0 2px 2px rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px rgba(0,0,0,0.2)" }}
+            sx={{
+                backgroundColor: "whitesmoke",
+                boxShadow: "0 2px 2px rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px rgba(0,0,0,0.2)"
+            }}
         >
-            <Toolbar sx={{ width: "100%", display: "flex", justifyContent: "space-between", padding: "10px 20px" }}>
+            <Toolbar sx={{ display: "flex", justifyContent: "space-between", padding: "10px 20px" }}>
                 <Typography
                     variant="h6"
                     noWrap
-                    onClick={() => navigate('/')}
+                    onClick={() => navigate("/")}
                     sx={{
-                        fontFamily: 'monospace',
+                        fontFamily: "monospace",
                         fontWeight: "bold",
                         fontSize: "1.5rem",
                         letterSpacing: ".2rem",
@@ -29,30 +69,57 @@ function NavBar() {
                         cursor: "pointer",
                         background: "-webkit-linear-gradient(lightpink, lightblue)",
                         WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent"
+                        WebkitTextFillColor: "transparent",
                     }}
                 >
                     TransConnect
                 </Typography>
 
-                {/* Nav Links */}
-                <Box sx={{ display: "flex", gap: 3, mr: 2 }}>
-                    <Button onClick={() => navigate('/resources')} sx={{ color: "lightblue", "&:hover": { color: "lightpink" } }}>Resources</Button>
-                    <Button onClick={() => navigate('/bathrooms')} sx={{ color: "lightblue", "&:hover": { color: "lightpink" } }}>Bathrooms</Button>
-
-                    {currUser ? (
-                        <>
-                            <Button onClick={() => navigate('/posts')} sx={{ color: "lightblue", "&:hover": { color: "lightpink" } }}>Posts</Button>
-                            <Button onClick={() => navigate(`/users/${currUser.username}`)} sx={{ color: "lightblue", "&:hover": { color: "lightpink" } }}>Profile</Button>
-                            <Button onClick={() => navigate('/logout')} sx={{ color: "lightblue", "&:hover": { color: "lightpink" } }}>Logout</Button>
-                        </>
-                    ) : (
-                        <>
-                            <Button onClick={() => navigate('/login')} sx={{ color: "lightblue", "&:hover": { color: "lightpink" } }}>Login</Button>
-                            <Button onClick={() => navigate('/register')} sx={{ color: "lightblue", "&:hover": { color: "lightpink" } }}>Signup</Button>
-                        </>
-                    )}
-                </Box>
+                {isMobile ? (
+                    <>
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label="menu"
+                            onClick={handleMenuOpen}
+                            sx={{ color: "lightblue" }}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <Menu
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleMenuClose}
+                        >
+                            {menuItems.map((item) => (
+                                <MenuItem
+                                    key={item.label}
+                                    onClick={() => {
+                                        navigate(item.path);
+                                        handleMenuClose();
+                                    }}
+                                >
+                                    {item.label}
+                                </MenuItem>
+                            ))}
+                        </Menu>
+                    </>
+                ) : (
+                    <Box sx={{ display: "flex", gap: 3, mr: 2 }}>
+                        {menuItems.map((item) => (
+                            <Button
+                                key={item.label}
+                                onClick={() => navigate(item.path)}
+                                sx={{
+                                    color: "lightblue",
+                                    "&:hover": { color: "lightpink" }
+                                }}
+                            >
+                                {item.label}
+                            </Button>
+                        ))}
+                    </Box>
+                )}
             </Toolbar>
         </AppBar>
     );
