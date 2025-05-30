@@ -21,7 +21,7 @@ import { Link } from "react-router-dom";
 
 /** CommentsBottomNavigation: allows user to add, edit, or delete comments on a particular post */
 
-export default function CommentsBottomNavigation({ postId }) {
+export default function CommentsBottomNavigation({ postId, comments }) {
     const { currUser } = useContext(UserContext);
     const [value, setValue] = useState(0);
     const [showInput, setShowInput] = useState(false);
@@ -35,18 +35,30 @@ export default function CommentsBottomNavigation({ postId }) {
         ref.current.ownerDocument.body.scrollTop = 0;
     }, [value]);
 
+    // useEffect(() => {
+    //     const fetchComments = async () => {
+    //         try {
+    //             const comments = await TransconnectApi.getComments(postId);
+    //             setCommentList(comments);
+    //         } catch (err) {
+    //             console.error(`Error fetching comments for post #${postId}`, err);
+    //         }
+    //     };
+
+    //     fetchComments();
+    // }, [postId]);
+
     useEffect(() => {
-        const fetchComments = async () => {
-            try {
-                const comments = await TransconnectApi.getComments(postId);
+
+        const setComments = async () => {
+            if (comments && comments.length > 0) {
                 setCommentList(comments);
-            } catch (err) {
-                console.error(`Error fetching comments for post #${postId}`, err);
             }
         };
 
-        fetchComments();
-    }, [postId]);
+        setComments();
+
+    }, [comments]);
 
     const handleAddComment = async () => {
         if (newComment.trim() !== "") {

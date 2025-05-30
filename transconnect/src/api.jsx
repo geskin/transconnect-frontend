@@ -147,6 +147,7 @@ class TransconnectApi {
     static async getPost(id) {
         try {
             let res = await this.request(`posts/${id}`);
+            console.log(`inside api: ${res}`);
             return res.post;
         } catch (err) {
             console.error(`error fetching post #${id}`, err);
@@ -190,7 +191,8 @@ class TransconnectApi {
 
     static async getComments(postId) {
         try {
-            let res = await this.request(`posts/${postId}/comments`);
+            let res = await this.request(`posts/${postId}`);
+            console.debug(res);
             return res.comments;
         } catch (err) {
             console.error("error fetching comments", err);
@@ -201,7 +203,7 @@ class TransconnectApi {
 
     static async getComment(postId, commentId) {
         try {
-            let res = await this.request(`posts/${postId}/comments/${commentId}`);
+            let res = await this.request(`comments/${postId}/${commentId}`);
             return res.comment;
         } catch (err) {
             console.error(`error fetching comment with id: ${commentId}`, err);
@@ -212,7 +214,7 @@ class TransconnectApi {
 
     static async createComment(postId, content, authorId) {
         try {
-            let res = await this.request(`posts/${postId}/comments`, { content, authorId }, 'post');
+            let res = await this.request(`comments/${postId}`, { content, authorId }, 'post');
             return res.comment;
         } catch (err) {
             console.error("error creating comment", err);
@@ -223,7 +225,7 @@ class TransconnectApi {
 
     static async editComment(postId, commentId, comment, username) {
         try {
-            let res = await this.request(`posts/${postId}/comments/${commentId}`, { comment, username }, "patch");
+            let res = await this.request(`comments/${postId}/${commentId}`, { comment, username }, "patch");
             return res.updatedComment;
         } catch (err) {
             console.error("error editing comment", err);
@@ -234,7 +236,7 @@ class TransconnectApi {
 
     static async deleteComment(postId, commentId, comment, username) {
         try {
-            let res = await this.request(`posts/${postId}/comments/${commentId}`, { comment, username }, 'delete');
+            let res = await this.request(`comments/${postId}/${commentId}`, { comment, username }, 'delete');
             return res.deleted;
         } catch (err) {
             console.error("error deleting comment", err);

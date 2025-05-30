@@ -16,6 +16,7 @@ import { Button, Typography } from "@mui/material";
 const PostDetail = () => {
     const { id } = useParams();
     const [post, setPost] = useState({ tags: [] });
+    const [comments, setComments] = useState([]);
     const [user, setUser] = useState({});
     const { currUser } = useContext(UserContext);
     const navigate = useNavigate();
@@ -28,19 +29,25 @@ const PostDetail = () => {
             return;
         }
 
-        const fetchPost = async () => {
+        const fetchPostAndComments = async () => {
             try {
                 const post = await TransconnectApi.getPost(id);
+                console.log(`post: ${post}`);
+                const comments = post.comments;
+                console.log(comments);
                 if (post) {
                     setPost(post);
                     setUser(post.user);
+                }
+                if (comments) {
+                    setComments(comments);
                 }
             } catch (err) {
                 console.error("Error fetching post", err);
             }
         };
 
-        fetchPost();
+        fetchPostAndComments();
     }, [currUser, id, navigate]);
 
     const handleDeletePost = async () => {
@@ -87,7 +94,7 @@ const PostDetail = () => {
             </div>
             <hr></hr>
             <div>
-                <CommentsBottomNavigation postId={id} />
+                <CommentsBottomNavigation postId={id} comments={comments} />
             </div>
         </div>
     );
